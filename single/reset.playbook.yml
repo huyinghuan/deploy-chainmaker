@@ -1,0 +1,13 @@
+- name: 清空数据
+  hosts: test_server
+  become: true
+  tasks:
+    - name: "清空数据"
+      ansible.builtin.file:
+        path: /data
+        state: absent
+        recurse: yes
+      loop:
+        - "{{ workspace.log_save }}"
+        - "{{ workspace.data_save }}"
+        - "{{ workspace.run }}"

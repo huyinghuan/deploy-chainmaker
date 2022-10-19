@@ -1,0 +1,6 @@
+# 单链部署的服务器ip
+[single_server]
+localhost # 10.0.0.1
+
+[single_server:vars]
+# ansible_user=root #单链部署的服务器 登录用户名

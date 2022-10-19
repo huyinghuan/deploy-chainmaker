@@ -1,0 +1,41 @@
+- name: 检查gcc
+  ansible.builtin.command: "gcc --version"
+  register: gcc_version
+  ignore_errors: true
+  changed_when: false
+- name: ShowLogs
+  ansible.builtin.debug:
+    msg: "{{ gcc_version.stdout_lines[0] }}"
+  when: gcc_version.rc == 0
+- name: 检查glibc
+  ansible.builtin.command: "ldd --version"
+  register: glibc_version
+  ignore_errors: true
+  changed_when: false
+- name: ShowLogs
+  ansible.builtin.debug:
+    msg: "{{ glibc_version.stdout_lines[0] }}"
+  when: glibc_version.rc == 0
+  # 如果没有安装gcc和glibc，就安装， centos 使用yum, ubuntu使用apt
+- name: 安装gcc和glibc
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - gcc
+    - glibc
+  when:
+    - gcc_version.rc != 0 or glibc_version.rc != 0
+    - ansible_os_family == 'RedHat'
+  become: true
+- name: 安装gcc和glibc
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - build-essential
+    - libc6
+  when:
+    - gcc_version.rc != 0 or glibc_version.rc != 0
+    - ansible_os_family == 'Debian'
+  become: true

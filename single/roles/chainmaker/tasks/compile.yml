@@ -7,6 +7,16 @@
 - name: Set GoPath
   ansible.builtin.set_fact:
     gopath: "{{ current_gopath.stdout }}"
+- name: Check GO Install
+  ansible.builtin.command: "{{ chainmaker.go_compile_version }} version"
+  register: go_version
+  environment:
+    PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+- name: Show Go version
+  ansible.builtin.debug:
+    msg: "{{ go_version.stdout }}"
+  tags: prepare
+  when: go_version.rc == 0
 - name: 准备编译项目的go版本
   ansible.builtin.shell: |
     go install golang.org/dl/{{ chainmaker.go_compile_version }}@latest
@@ -17,10 +27,13 @@
   changed_when: true
   environment:
     PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+    GOPROXY: https://proxy.golang.com.cn,direct
+  when: go_version.rc != 0
 - name: Show Go version
   ansible.builtin.debug:
     msg: "{{ go_compile_version_result.stdout }}"
   tags: prepare
+  when: go_version.rc != 0
 - name: 项目clone
   ansible.builtin.git:
     repo: "https://{{ chainmaker.username | urlencode }}:{{ chainmaker.password | urlencode }}@{{ chainmaker.repo }}"

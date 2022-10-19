@@ -3,7 +3,6 @@ org_list:
   - "chainmaker2"
   - "chainmaker3"
   - "chainmaker4"
-  - "chainmaker5"
 port_map:
   chainmaker1: # 必须和org_list中的一致
     rpc: 12301
@@ -17,9 +16,6 @@ port_map:
   chainmaker4:
     rpc: 12304
     p2p: 11304
-  chainmaker5:
-    rpc: 12305
-    p2p: 11305
 
 workspace:
   compile: /data/compiler

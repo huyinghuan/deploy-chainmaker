@@ -1,0 +1,9 @@
+- name: Get GoPath
+  ansible.builtin.command: go env GOPATH
+  register: current_gopath
+  environment:
+    PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
+  changed_when: false
+- name: Set GoPath
+  ansible.builtin.set_fact:
+    gopath: "{{ current_gopath.stdout }}"

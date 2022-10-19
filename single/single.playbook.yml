@@ -15,6 +15,11 @@
         name: chainmaker
         tasks_from: compile
       tags: compile
+    - name: 编译证书工具
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: certs.yml
+      tags: certs-tools
     # - name: 复制运行时文件
     #   ansible.builtin.copy:
     #     src: "{{chain.buildDir}}/{{chain.binName}}"

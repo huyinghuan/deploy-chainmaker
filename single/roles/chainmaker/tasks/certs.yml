@@ -1,0 +1,26 @@
+# 证书工具
+- ansible.builtin.import_tasks: gopath.yml
+- name: Certs项目clone
+  ansible.builtin.git:
+    repo: "https://{{ chainmaker.username | urlencode }}:{{ chainmaker.password | urlencode }}@{{ chainmaker_cert.repo }}"
+    dest: "{{ workspace.compile }}/{{ chainmaker_cert.name }}"
+    version: "{{ chainmaker.version }}"
+    force: true
+    depth: 1
+    single_branch: true
+- name: 编译脚本拷贝
+  ansible.builtin.template:
+    src: compile-cryptogen.sh.j2
+    dest: "{{ workspace.compile }}/{{ chainmaker_cert.name }}/compile-cryptogen.ansible.sh"
+    mode: 0755
+- name: 编译
+  ansible.builtin.command: ./compile-cryptogen.ansible.sh
+  args:
+    chdir: "{{ workspace.compile }}/{{ chainmaker_cert.name }}"
+  environment:
+    PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+  register: result
+  changed_when: true
+- name: Show Logs
+  ansible.builtin.debug:
+    msg: "{{ result.stdout_lines }}"

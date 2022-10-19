@@ -1,17 +1,10 @@
-- name: Get GoPath
-  ansible.builtin.command: go env GOPATH
-  register: current_gopath
-  environment:
-    PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
-  changed_when: false
-- name: Set GoPath
-  ansible.builtin.set_fact:
-    gopath: "{{ current_gopath.stdout }}"
+- ansible.builtin.import_tasks: gopath.yml
 - name: Check GO Install
   ansible.builtin.command: "{{ chainmaker.go_compile_version }} version"
   register: go_version
   environment:
     PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+  changed_when: false
 - name: Show Go version
   ansible.builtin.debug:
     msg: "{{ go_version.stdout }}"

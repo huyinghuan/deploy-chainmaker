@@ -1,12 +1,14 @@
 - name: 清空数据
-  hosts: test_server
+  hosts: single_server
   become: true
   tasks:
+    - name: 导入配置
+      ansible.builtin.import_role:
+        name: chainmaker
     - name: "清空数据"
       ansible.builtin.file:
-        path: /data
+        path: "{{ item }}"
         state: absent
-        recurse: yes
       loop:
         - "{{ workspace.log_save }}"
         - "{{ workspace.data_save }}"

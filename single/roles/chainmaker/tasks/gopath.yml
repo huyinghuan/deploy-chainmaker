@@ -4,6 +4,8 @@
   environment:
     PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
   changed_when: false
+  when: gopath is not defined
 - name: Set GoPath
   ansible.builtin.set_fact:
     gopath: "{{ current_gopath.stdout }}"
+  when: gopath is not defined

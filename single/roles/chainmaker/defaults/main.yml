@@ -1,22 +1,16 @@
-org_list:
-  - "chainmaker1"
-  - "chainmaker2"
-  - "chainmaker3"
-  - "chainmaker4"
-port_map:
-  chainmaker1: # 必须和org_list中的一致
-    rpc: 12301
-    p2p: 11301
-  chainmaker2:
-    rpc: 12302
-    p2p: 11302
-  chainmaker3:
-    rpc: 12303
-    p2p: 11303
-  chainmaker4:
-    rpc: 12304
-    p2p: 11304
-
+crypto_config: # 证书生生成配置
+  domain: chainmaker.org
+  host_name: wx-org
+  count: 4 # 节点数量 1, 4, 7
+  location:
+    country: CN
+    locality: Beijing
+    province: Beijing
+chainruntime: # 链运行时配置
+  rpc_port: 12301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
+  p2p_port: 11301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
+  consensus_type: 1 # 共识类型 (0-SOLO,1-TBFT(default),3-HOTSTUFF,4-RAFT,5-DPOS):
+  log_level: INFO # 日志级别 (DEBUG|INFO(default)|WARN|ERROR)
 workspace:
   compile: /data/compiler
   run: /data/chainmaker_runtime
@@ -26,7 +20,7 @@ workspace:
 bin: chainmaker
 chainmaker:
   repo: git.chainmaker.org.cn/chainmaker/chainmaker-go.git
-  version: v2.3.0
+  version: v2.3.0 # 非v2.3.0版本需要在 roles/chainmaker/templates 下复制配置文件夹v2.3.0 到目标版本号
   name: chainmaker-go
   username: your_username_in_git.chainmaker.org.cn
   password: your_password_in_git.chainmaker.org.cn
@@ -34,4 +28,4 @@ chainmaker:
 chainmaker_cert: # 证书工具
   repo: git.chainmaker.org.cn/chainmaker/chainmaker-cryptogen.git
   name: chainmaker-cryptogen
-  #version: v2.3.0 直接使用 chainmaker.version
+# version: v2.3.0 直接使用 chainmaker.version

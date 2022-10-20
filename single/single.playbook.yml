@@ -1,25 +1,34 @@
 - name: 单机部署链
   hosts: single_server
   # become: true
+  roles:
+    - chainmaker
   tasks:
-    - name: 环境检查
+    - name: 软件版本检查
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: check
-    - name: 目录准备
+      tags: [prepare, prepare_check]
+    - name: 准备目录
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: prepare
+        tasks_from: prepare_dir
+      tags: [prepare, prepare_dir]
     - name: 编译
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: compile
-      tags: compile
+      tags: [prepare, prepare_compile]
     - name: 编译证书工具
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: certs.yml
-      tags: certs-tools
+        tasks_from: compile_certstools
+      tags: [prepare, prepare_certs_tool]
+    - name: 生成证书
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: gen_crts
+      tags: [prepare, prepare_certs]
     # - name: 复制运行时文件
     #   ansible.builtin.copy:
     #     src: "{{chain.buildDir}}/{{chain.binName}}"

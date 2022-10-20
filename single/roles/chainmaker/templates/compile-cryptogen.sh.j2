@@ -3,6 +3,7 @@ export GO111MODULE=on
 export GOPROXY=https://mirrors.aliyun.com/goproxy/
 export GONOPROXY=chainmaker.org
 export GOPRIVATE=chainmaker.org
+export PATH={{ gopath }}/bin:$PATH
 cd src
 {{ chainmaker.go_compile_version }} mod tidy
 {{ chainmaker.go_compile_version }} build -o {{ workspace.compile }}/{{ chainmaker_cert.name }}.bin

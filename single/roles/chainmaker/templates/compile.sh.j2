@@ -3,6 +3,7 @@ export GO111MODULE=on
 export GOPROXY=https://mirrors.aliyun.com/goproxy/
 export GONOPROXY=chainmaker.org
 export GOPRIVATE=chainmaker.org
+export PATH={{ gopath }}/bin:$PATH
 DATETIME=$(date "+%Y%m%d%H%M%S")
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT=$(git log --pretty=format:'%h' -n 1)

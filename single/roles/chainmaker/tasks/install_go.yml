@@ -1,0 +1,31 @@
+# 安装编译需要的go的版本，为了避免和系统的go版本冲突， 安装目录为 ~/sdk
+- name: GOPATH
+  ansible.builtin.import_tasks: gopath.yml
+- name: Check GO Install
+  ansible.builtin.command: "{{ chainmaker.go_compile_version }} version"
+  register: go_version
+  environment:
+    PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+  changed_when: false
+- name: Show Go version
+  ansible.builtin.debug:
+    msg: "{{ go_version.stdout }}"
+  tags: prepare
+  when: go_version.rc == 0
+- name: 准备编译项目的go版本
+  ansible.builtin.shell: |
+    go install golang.org/dl/{{ chainmaker.go_compile_version }}@latest
+    {{ chainmaker.go_compile_version }} download
+    {{ chainmaker.go_compile_version }} version
+  tags: prepare
+  register: go_compile_version_result
+  changed_when: true
+  environment:
+    PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
+    GOPROXY: https://proxy.golang.com.cn,direct
+  when: go_version.rc != 0
+- name: Show Go version
+  ansible.builtin.debug:
+    msg: "{{ go_compile_version_result.stdout }}"
+  tags: prepare
+  when: go_version.rc != 0

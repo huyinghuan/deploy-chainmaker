@@ -4,13 +4,6 @@
             "vars/*.yml",
             "defaults/*.yml"
         ],
-        "https://raw.fastgit.org/ansible/schemas/main/f/ansible.json#/$defs":[
-            "tasks/*.yml",
-            "handlers/*.yml",
-            "meta/*.yml",
-            "roles/*/tasks/*.yml",
-            "roles/*/handlers/*.yml",
-            "roles/*/meta/*.yml"
-        ]
+        "https://raw.fastgit.org/ansible/schemas/main/f/ansible.json#/$defs/tasks": "tasks/*.yml"
     }
 }

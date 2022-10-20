@@ -7,6 +7,7 @@ crypto_config: # 证书生生成配置
     locality: Beijing
     province: Beijing
 chainruntime: # 链运行时配置
+  chain_name: mychain # 链名称
   rpc_port: 12301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
   p2p_port: 11301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
   consensus_type: 1 # 共识类型 (0-SOLO,1-TBFT(default),3-HOTSTUFF,4-RAFT,5-DPOS):

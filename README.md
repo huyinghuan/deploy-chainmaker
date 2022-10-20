@@ -1,10 +1,10 @@
 ## "一键"部署长安链
 
-本机必须安装 `ansible`， 安装见: https://docs.ansible.com/ansible/latest/installation_guide/index.html
+本机客户端必须安装 `ansible`， 安装见: https://docs.ansible.com/ansible/latest/installation_guide/index.html
 
 本文档命令均在客户端执行。
 
-长安链所在服务端，系统支持: centos8 stream 或 redhat 系， debian
+长安链所在服务端系统支持: redhat 系， debian
 服务器环境要求，按官方文档配置即可
 
 支持部署的长安链版本:
@@ -13,7 +13,7 @@
 已测试部署服务器系统:
 
 - centos stream 8
-- armbian
+- armbian aarch64
 
 ### 准备
 
@@ -28,6 +28,6 @@
 
 ```shell
 cd single
-ansible-playbook -i hosts single.playbook.yml
+ansible-playbook -i hosts single.playbook.yml # -K # 非root用户 需要加上 -K 参数
 ```
 

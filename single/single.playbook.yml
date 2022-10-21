@@ -1,6 +1,5 @@
 - name: 单机部署链
   hosts: single_server
-  # become: true
   roles:
     - chainmaker
   tasks:
@@ -9,12 +8,17 @@
         name: chainmaker
         tasks_from: check
       tags: [prepare, prepare_check]
+    - name: 获取组织id列表
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_get_orglist
+      tags: [prepare, prepare_orglist]
     - name: 准备目录
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: prepare_dir
+        tasks_from: single_prepare_dir
       tags: [prepare, prepare_dir]
-    - name: 编译
+    - name: 编译链运行时二进制
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: compile
@@ -32,15 +36,13 @@
     - name: 生成运行时配置文件
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: gen_runtime_config
+        tasks_from: single_gen_runtime_config
       tags: [prepare, prepare_runtime_config]
-    # - name: 复制运行时文件
-    #   ansible.builtin.copy:
-    #     src: "{{chain.buildDir}}/{{chain.binName}}"
-    #     dest: "{{deploy.dir}}/{{item}}/{{chain.binName}}"
-    #     mode: "0777"
-    #     remote_src: true
-    #   loop: "{{org_list}}"
+    - name: Check Config
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: test
+      tags: [prepare, prepare_runtime_config]
     # - name: 上传证书
     #   ansible.builtin.unarchive:
     #     src: "./crypto-config.zip"

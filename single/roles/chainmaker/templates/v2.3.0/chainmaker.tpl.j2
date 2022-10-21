@@ -39,13 +39,13 @@ blockchain:
 node:
   # Organization id is the node belongs to.
   # When the auth type is public, org id is ignored.
-  org_id: {{ orgid_list[item.0-1] }}
+  org_id: "{{ current_org_id }}"
 
   # Private key file path
-  priv_key_file:  "./crypto-config/{{ orgid_list[item.0-1] }}.{{crypto_config.domain}}/ca/ca.key" 
+  priv_key_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.sign.key" 
 
   # Certificate file path
-  cert_file: "./crypto-config/{{ orgid_list[item.0-1] }}.{{crypto_config.domain}}/ca/ca.crt" 
+  cert_file: "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.sign.crt" 
 
   # Certificate cache size, used to speed up member identity verification.
   # By default the cache size is 1000.
@@ -96,7 +96,7 @@ net:
 
   # The address and port the node listens on.
   # By default, it uses 0.0.0.0 to listen on all network interfaces.
-  listen_addr: /ip4/0.0.0.0/tcp/{{ chainruntime.p2p_port + item.0 }}
+  listen_addr: /ip4/0.0.0.0/tcp/{{ p2p_port }}
 
   # Max stream of a connection.
   # peer_stream_pool_size: 100
@@ -113,23 +113,24 @@ net:
   # Example ip format: "/ip4/127.0.0.1/tcp/11301/p2p/"+nodeid
   # Example dns format："/dns/cm-node1.org/tcp/11301/p2p/"+nodeid
   seeds:
-
+    {% for number in range(crypto_config.count) -%}
+    - /ip4/127.0.0.1/tcp/{{ chainruntime.p2p_port + number }}/p2p/{{ nodeid_list[number] }}
+    {% endfor %}
   # Network tls settings.
   tls:
     # Enable tls or not. Currently it can only be true...
     enabled: true
 
     # TLS private key file path.
-    priv_key_file: ../config/{org_path}/certs/{net_cert_path}.key
+    priv_key_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.tls.key" 
 
     # TLS Certificate file path.
-    cert_file: ../config/{org_path}/certs/{net_cert_path}.crt
-
+    cert_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.tls.crt"
     # TLS enc private key file path. (only for gmtls1.1)
-    priv_enc_key_file: ../config/{org_path}/certs/{net_cert_path}.enc.key
+    #priv_enc_key_file: ../config/{org_path}/certs/{net_cert_path}.enc.key
 
     # TLS enc Certificate file path.
-    cert_enc_file: ../config/{org_path}/certs/{net_cert_path}.enc.crt
+    #cert_enc_file: ../config/{org_path}/certs/{net_cert_path}.enc.crt
 
   # The blacklist is automatically block the listed seed to connect.
   # blacklist:
@@ -179,7 +180,7 @@ rpc:
   provider: grpc  # [*]
 
   # RPC port
-  port: {rpc_port}
+  port: {{ rpc_port }}
 
   # Interval of checking trust root changes, in seconds.
   # If changed, the rpc server's root certificate pool will also change.
@@ -224,16 +225,14 @@ rpc:
     mode:           twoway
 
     # RPC TLS private key file path
-    priv_key_file:  ../config/{org_path}/certs/{rpc_cert_path}.key
-
+    priv_key_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.tls.key" 
     # RPC TLS public key file path
-    cert_file:      ../config/{org_path}/certs/{rpc_cert_path}.crt
-
+    cert_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1.tls.crt"
     # RPC enc TLS private key file path (only for gmtls1.1)
-    priv_enc_key_file:  ../config/{org_path}/certs/{rpc_cert_path}.enc.key
+    #priv_enc_key_file:  ../config/{org_path}/certs/{rpc_cert_path}.enc.key
 
     # RPC enc TLS public key file path
-    cert_enc_file:      ../config/{org_path}/certs/{rpc_cert_path}.enc.crt
+    #cert_enc_file:      ../config/{org_path}/certs/{rpc_cert_path}.enc.crt
 
   # RPC blacklisted ip addresses
   blacklist:
@@ -269,7 +268,7 @@ tx_filter:
       # Serialization interval in seconds
       serialize_interval: 10
       # file path
-      path: ../data/{org_id}/tx_filter
+      path: {{ data_save }}/tx_filter
     # bird's nest config
     birds_nest:
       # bird's nest size
@@ -319,7 +318,7 @@ tx_filter:
       # Serialization interval in seconds
       serialize_interval: 10
       # file path
-      path: ../data/{org_id}/tx_filter
+      path: {{ data_save }}/tx_filter #../data/{org_id}/tx_filter
     # Transaction filter rules
     rules:
       # Absolute expiration time /second
@@ -353,7 +352,7 @@ monitor:
   enabled: false
 
   # Monitor service port
-  port: {monitor_port}
+  port: {{ monitor_port }}
 
 # PProf Settings
 pprof:
@@ -361,7 +360,7 @@ pprof:
   enabled: false
 
   # PProf port
-  port: {pprof_port}
+  port:  {{ pprof_port }}
 
 # Consensus related settings
 consensus:
@@ -394,7 +393,7 @@ scheduler:
 # store_path, dsn the content cannot be changed after startup.
 storage:
   # Default store path
-  store_path: ../data/{org_id}/ledgerData1 # [*]
+  store_path: {{ data_save }}/ledgerData1 # [*]
 
   # Prefix for mysql db name
   # db_prefix: org1_
@@ -447,7 +446,7 @@ storage:
     # If provider is leveldb, leveldb_config should not be null.
     leveldb_config:
       # LevelDb store path
-      store_path: ../data/{org_id}/block
+      store_path: {{ data_save }}/block
 
     # Example for sql provider
     # Databases type support leveldb, sql, badgerdb, tikvdb
@@ -488,7 +487,7 @@ storage:
   statedb_config:
     provider: leveldb
     leveldb_config:
-      store_path: ../data/{org_id}/state
+      store_path: {{ data_save }}/state 
 
   # History db config
   historydb_config:
@@ -497,13 +496,13 @@ storage:
     disable_contract_history: true
     disable_account_history: true
     leveldb_config:
-      store_path: ../data/{org_id}/history
+      store_path: {{ data_save }}/history
 
   # Result db config
   resultdb_config:
     provider: leveldb
     leveldb_config:
-      store_path: ../data/{org_id}/result
+      store_path: {{ data_save }}/result
 
   # Disable contract event database or not. If it is false, contract_eventdb_config must be mysql
   disable_contract_eventdb: true
@@ -523,22 +522,22 @@ vm:
   # Golang runtime in docker container
   go:
     # Enable docker go virtual machine, default: false
-    enable: {enable_vm_go}
+    enable: {{ chainruntime.go_evm.enable }}
     # Mount data path in chainmaker, include contracts, uds socks
-    data_mount_path: ../data/{org_id}/go
+    data_mount_path: {{ data_save }}/go
     # Mount log path in chainmaker
-    log_mount_path: ../log/{org_id}/go
+    log_mount_path: {{ data_save }}/log/go
     # Communication protocol, used for chainmaker and docker manager communication
     # 1. tcp: docker vm uses TCP to communicate with chain
     # 2. uds: docker vm uses unix domain socket to communicate with chain
-    protocol: {vm_go_protocol}
+    protocol: {{ chainruntime.go_evm.protocol }}
     # If use a customized VM configuration file, supplement it; else, do not configure
     # Priority: chainmaker.yml > vm.yml > default settings
     # dockervm_config_path: /config_path/vm.yml
     # Whether to print log on terminal
     log_in_console: false
     # Log level of docker vm go
-    log_level: {vm_go_log_level}
+    log_level: {{ chainruntime.go_evm.log_level }}
 
     # Grpc max send message size of the following 2 servers, Default size is 100, unit: MB
     max_send_msg_size: 100
@@ -553,13 +552,13 @@ vm:
     #  Configs of docker runtime server (handle messages with contract sandbox)
     runtime_server:
       # Runtime server port, default 32351
-      port: {vm_go_runtime_port}
+      port: {{ chainruntime.go_evm.runtime_port }}
 
     # Configs of contract engine server (handle messages with contract engine)
     contract_engine:
       # Docker vm contract engine server host, default 127.0.0.1
       host: 127.0.0.1
       # Docker vm contract engine server port, default 22351
-      port: {vm_go_engine_port}
+      port: {{ chainruntime.go_evm.engine_port }}
       # Max number of connection created to connect docker vm service
       max_connection: 5

@@ -1,0 +1,24 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+- name: 引入节点id变量
+  ansible.builtin.import_tasks: get_nodeid.yml
+- name: 拷贝配置文件
+  vars:
+    data_save: "{{ workspace.data_save }}/{{ item.0 }}"
+    current_org_id: "{{ item.0 }}"
+    p2p_port: "{{ chainruntime.p2p_port + idx / 2 }}"
+    rpc_port: "{{ chainruntime.rpc_port + idx / 2 }}"
+    monitor_port: "{{ chainruntime.monitor_port + idx / 2 }}"
+    pprof_port: "{{ chainruntime.pprof_port + idx / 2 }}"
+    files:
+      - "bc"
+      - "log"
+      - "chainmaker"
+  ansible.builtin.template:
+    src: "{{ chainmaker.version }}/{{ item.1 }}.tpl.j2"
+    dest: "{{ workspace.run }}/{{ item.0 }}/{{ item.1 }}.yml"
+    mode: 0644
+    force: true
+  loop: "{{ orgid_list | product(files) | list }}"
+  loop_control:
+    index_var: idx

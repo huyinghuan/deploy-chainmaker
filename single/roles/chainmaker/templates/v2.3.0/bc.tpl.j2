@@ -122,10 +122,10 @@ consensus:
   nodes:
     # Each org has one or more consensus nodes.
     # We use p2p node id to represent nodes here.
-    {% for number in range(1, crypto_config.count+1) -%}
-    - org_id: {{ orgid_list[number-1] }}
+    {% for orgid in orgid_list -%}
+    - org_id: {{ orgid }}
       node_id:
-        - {{ nodeid_list[number-1] }}
+        - {{ nodeid_list[loop.index-1] }}
     {% endfor %}
   # We can specify other consensus config here in key-value format.
   ext_config:
@@ -136,9 +136,11 @@ consensus:
 # When in permessionedWithKey mode or public mode, it represents the admin users.
 trust_roots:
   # org id and root file path list.
-  - org_id: {{ orgid_list[item.0-1] }}
-    root:
-      - "./crypto-config/{{ orgid_list[item.0-1] }}.{{crypto_config.domain}}/ca/ca.crt"
+  {% for orgid in orgid_list -%}
+  - org_id: {{ orgid }}
+    node_id:
+      - "./crypto-config/{{ orgid }}.{{crypto_config.domain}}/ca/ca.crt"
+  {% endfor %}
 
 # 第三方证书库兼容
 #trust_members:

@@ -10,13 +10,20 @@ chainruntime: # 链运行时配置
   chain_name: mychain # 链名称
   rpc_port: 12301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
   p2p_port: 11301 # 在单机部署中,该端口会根据节点数量依次加1, 在多机部署中,所有机器均为该端口
+  monitor_port: 12400
+  pprof_port: 12450
   consensus_type: 1 # 共识类型 (0-SOLO,1-TBFT(default),3-HOTSTUFF,4-RAFT,5-DPOS):
   log_level: INFO # 日志级别 (DEBUG|INFO(default)|WARN|ERROR)
+  go_evm:
+    enable: false # 是否启用go-ethereum虚拟机
+    protocol: uds
+    log_level: INFO # 日志级别 (DEBUG|INFO(default)|WARN|ERROR)
+    runtime_port: 32351
+    engine_port: 22351
 workspace:
   compile: /data/compiler
   run: /data/chainmaker_runtime
-  log_save: /data/logs
-  data_save: /data/data
+  data_save: /data/chain_store # 单机模式下 log 会存储 /data/data/$orgid/log, 区块会存储 /data/data/$orgid/data，其他类似
 
 bin: chainmaker
 chainmaker:

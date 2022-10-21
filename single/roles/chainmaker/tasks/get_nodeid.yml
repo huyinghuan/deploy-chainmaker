@@ -7,11 +7,3 @@
 - name: 节点id 列表赋值
   ansible.builtin.set_fact:
     nodeid_list: "{{ nodeid.results | map(attribute='stdout') | list }}"
-- name: 组织org_id列表赋值
-  ansible.builtin.set_fact:
-    orgid_list: "{{ range(1, crypto_config.count + 1) | map('regex_replace', '(.+)', crypto_config.host_name+'\\1') | list }}"
-- name: Show 节点id, 组织id
-  ansible.builtin.debug:
-    msg: 
-      - "{{ nodeid_list }}"
-      - "{{ orgid_list }}"

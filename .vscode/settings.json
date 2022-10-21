@@ -5,5 +5,9 @@
             "defaults/*.yml"
         ],
         "https://raw.fastgit.org/ansible/schemas/main/f/ansible.json#/$defs/tasks": "tasks/*.yml"
+    },
+    "files.associations": {
+        "*.tpl.j2": "jinja-yaml",
+        "*.sh.j2": "jinja-shell"
     }
 }

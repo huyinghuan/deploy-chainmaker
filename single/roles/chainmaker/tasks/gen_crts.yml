@@ -1,12 +1,18 @@
 # 证书申请
+- name: 证书是否已经存在
+  ansible.builtin.stat:
+    path: "{{ workspace.compile }}/crypto-config"
+  register: crypto_file_stat
 - name: 复制证书配置文件
   ansible.builtin.template:
     src: "{{ chainmaker.version }}/crypto_config_template.yml.j2"
     dest: "{{ workspace.compile }}/crypto_config.yml"
     mode: 0644
+  when: not crypto_file_stat.stat.exists or force
 - name: 申请证书
   ansible.builtin.command: "./{{ chainmaker_cert.name }}.bin generate -c crypto_config.yml"
   args:
     chdir: "{{ workspace.compile }}"
   register: cert_result
   changed_when: cert_result.rc == 0
+  when: not crypto_file_stat.stat.exists or force

@@ -37,3 +37,4 @@ chainmaker_cert: # 证书工具
   repo: git.chainmaker.org.cn/chainmaker/chainmaker-cryptogen.git
   name: chainmaker-cryptogen
 # version: v2.3.0 直接使用 chainmaker.version
+force: false # 强制模式

@@ -2,17 +2,17 @@
   hosts: single_server
   roles:
     - chainmaker
+  become: true
   tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ ansible_architecture }}"
+      tags: debug
     - name: 软件版本检查
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: check
       tags: [prepare, prepare_check]
-    - name: 获取组织id列表
-      ansible.builtin.import_role:
-        name: chainmaker
-        tasks_from: single_get_orglist
-      tags: [prepare, prepare_orglist]
     - name: 准备目录
       ansible.builtin.import_role:
         name: chainmaker
@@ -38,74 +38,23 @@
         name: chainmaker
         tasks_from: single_gen_runtime_config
       tags: [prepare, prepare_runtime_config]
-    - name: Check Config
+    - name: 拷贝运行文件
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_run_prepare
+      tags: [prepare, prepare_run]
+    - name: 准备Systemd
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_run_systemd
+      tags: [prepare, prepare_run_systemd]
+    - name: Start
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_start
+      tags: [prepare, start]
+    - name: Test
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: test
-      tags: [prepare, prepare_runtime_config]
-    # - name: 上传证书
-    #   ansible.builtin.unarchive:
-    #     src: "./crypto-config.zip"
-    #     dest: "{{deploy.dir}}/{{item}}"
-    #   loop: "{{org_list}}"
-    # - name: 上传动态文件
-    #   tags: upload_lib
-    #   copy:
-    #     src: "../lib"
-    #     dest: "{{deploy.dir}}/{{item}}/"
-    #     mode: 0777
-    #   loop: "{{org_list}}"
-    # - name: 复制配置文件
-    #   ansible.builtin.copy:
-    #     src: "./conf/"
-    #     dest: "{{deploy.dir}}/{{item}}"
-    #     mode: "0777"
-    #   loop: "{{org_list}}"
-    # - name: 修改配置文件
-    #   tags: modify
-    #   ansible.builtin.replace:
-    #     path: "{{deploy.dir}}/{{item}}/mangochain.yml"
-    #     regexp: "\\$orgId"
-    #     replace: "{{item}}"
-    #   loop: "{{org_list}}"
-    # - name: 修改配置文件
-    #   tags: modify
-    #   ansible.builtin.replace:
-    #     path: "{{deploy.dir}}/{{item}}/mangochain.yml"
-    #     regexp: "\\$data"
-    #     replace: "{{deploy.data}}/{{item}}"
-    #   loop: "{{org_list}}"
-    # - name: 修改配置文件
-    #   tags: modify_log
-    #   ansible.builtin.replace:
-    #     path: "{{deploy.dir}}/{{item}}/log.yml"
-    #     regexp: "\\$logdir"
-    #     replace: "{{deploy.log}}/{{item}}"
-    #   loop: "{{org_list}}"
-    # - name: 修改配置文件rpc端口
-    #   ansible.builtin.replace:
-    #     path: "{{deploy.dir}}/{{item}}/mangochain.yml"
-    #     regexp: "\\$rpcPort"
-    #     replace: "{{portMap[item].rpc}}"
-    #   loop: "{{org_list}}"
-    # - name: 修改配置文件p2p端口
-    #   ansible.builtin.replace:
-    #     path: "{{deploy.dir}}/{{item}}/mangochain.yml"
-    #     regexp: "\\$p2pPort"
-    #     replace: "{{portMap[item].p2p}}"
-    #   loop: "{{org_list}}"
-    # - name: 运行节点进程
-    #   tags: run
-    #   shell: |
-    #     cd {{deploy.dir}}/{{item}}
-    #     if [ "$(pm2 id {{chain.binName}}_{{item}})" != "[]" ]; then
-    #       echo 共识节点已启动
-    #       exit 0
-    #     fi
-    #     pm2 start {{chain.binName}} --name {{chain.binName}}_{{item}} -l start.log --interpreter none -- start -c ./mangochain.yml
-    #   register: result
-    #   environment:
-    #     LD_LIBRARY_PATH: "{{deploy.dir}}/{{item}}/lib"
-    #     PATH: "{{deploy.dir}}/{{item}}/lib:{{ ansible_env.PATH }}"
-    #     WASMER_BACKTRACE: "1"
-    #   loop: "{{org_list}}"
+      tags: [prepare, test]

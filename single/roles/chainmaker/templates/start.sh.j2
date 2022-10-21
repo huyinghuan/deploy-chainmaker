@@ -1,0 +1,5 @@
+#! /bin/bash
+export LD_LIBRARY_PATH={{ run_dir }}/lib:$LD_LIBRARY_PATH
+export PATH={{ run_dir }}/lib:$PATH
+export WASMER_BACKTRACE=1
+./{{ bin }} start -c ./chainmaker.yml

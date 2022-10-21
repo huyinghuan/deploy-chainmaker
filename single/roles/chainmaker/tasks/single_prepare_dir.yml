@@ -1,3 +1,5 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
 - name: 创建存储目录
   vars:
     files:
@@ -10,7 +12,7 @@
   loop: "{{ orgid_list | product(files) | list }}"
 - name: 创建运行时目录
   ansible.builtin.file:
-    path: "{{ workspace.run }}/{{ item }}"
+    path: "{{ workspace.run }}/{{ item }}/lib"
     state: directory
     mode: 0777
   loop: "{{ orgid_list }}"

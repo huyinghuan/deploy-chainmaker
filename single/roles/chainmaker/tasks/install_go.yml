@@ -7,6 +7,7 @@
   environment:
     PATH: /usr/local/go/bin:{{ gopath }}/bin:{{ ansible_env.PATH }}
   changed_when: false
+  ignore_errors: true
 - name: Show Go version
   ansible.builtin.debug:
     msg: "{{ go_version.stdout }}"

@@ -12,5 +12,6 @@ buildTime="$LOCALCONF_HOME.BuildDateTime=${DATETIME}"
 gitBranch="$LOCALCONF_HOME.GitBranch=${GIT_BRANCH}"
 version="$LOCALCONF_HOME.CurrentVersion={{ chainmaker.version }}"
 commit="$LOCALCONF_HOME.GitCommit=${GIT_COMMIT}"
+rm go.sum
 {{ chainmaker.go_compile_version }} mod tidy
 {{ chainmaker.go_compile_version }} build -ldflags="-X '$buildTime' -X '$gitBranch' -X '$version' -X '$commit'" -o {{ workspace.compile }}/{{ bin }} main/main.go

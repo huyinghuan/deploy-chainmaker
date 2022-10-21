@@ -123,7 +123,7 @@ consensus:
     # Each org has one or more consensus nodes.
     # We use p2p node id to represent nodes here.
     {% for orgid in orgid_list -%}
-    - org_id: {{ orgid }}
+    - org_id: {{ orgid }}.{{ crypto_config.domain }}
       node_id:
         - {{ nodeid_list[loop.index-1] }}
     {% endfor %}
@@ -137,8 +137,8 @@ consensus:
 trust_roots:
   # org id and root file path list.
   {% for orgid in orgid_list -%}
-  - org_id: {{ orgid }}
-    node_id:
+  - org_id: {{ orgid }}.{{ crypto_config.domain }}
+    root:
       - "./crypto-config/{{ orgid }}.{{crypto_config.domain}}/ca/ca.crt"
   {% endfor %}
 

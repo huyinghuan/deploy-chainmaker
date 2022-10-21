@@ -1,7 +1,12 @@
 # 证书工具
+- name: 是否已经编译完成了
+  ansible.builtin.stat:
+    path: "{{ workspace.compile }}/{{ chainmaker_cert.name }}"
+  register: cert_bin_file_stat
 - name: GOPATH
   ansible.builtin.import_tasks: gopath.yml
   tags: clone
+  when: not cert_bin_file_stat.stat.exists
 - name: Certs项目clone
   ansible.builtin.git:
     repo: "https://{{ chainmaker.username | urlencode }}:{{ chainmaker.password | urlencode }}@{{ chainmaker_cert.repo }}"
@@ -11,12 +16,14 @@
     depth: 1
     single_branch: true
   tags: clone
+  when: not cert_bin_file_stat.stat.exists
 - name: 编译脚本拷贝
   ansible.builtin.template:
     src: compile-cryptogen.sh.j2
     dest: "{{ workspace.compile }}/{{ chainmaker_cert.name }}/compile-cryptogen.ansible.sh"
     mode: 0755
   tags: clone
+  when: not cert_bin_file_stat.stat.exists
 - name: 编译
   ansible.builtin.command: ./compile-cryptogen.ansible.sh
   args:
@@ -24,7 +31,9 @@
   register: result
   changed_when: true
   tags: compile_certtools
+  when: not cert_bin_file_stat.stat.exists
 - name: Show Logs
   ansible.builtin.debug:
     msg: "{{ result.stdout_lines }}"
   tags: compile_certtools
+  when: not cert_bin_file_stat.stat.exists

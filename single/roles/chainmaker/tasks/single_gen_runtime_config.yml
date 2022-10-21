@@ -6,10 +6,10 @@
   vars:
     data_save: "{{ workspace.data_save }}/{{ item.0 }}"
     current_org_id: "{{ item.0 }}"
-    p2p_port: "{{ chainruntime.p2p_port + idx / 2 }}"
-    rpc_port: "{{ chainruntime.rpc_port + idx / 2 }}"
-    monitor_port: "{{ chainruntime.monitor_port + idx / 2 }}"
-    pprof_port: "{{ chainruntime.pprof_port + idx / 2 }}"
+    p2p_port: "{{ chainruntime.p2p_port + (idx / 3) | int }}"
+    rpc_port: "{{ chainruntime.rpc_port + (idx / 3) | int }}"
+    monitor_port: "{{ chainruntime.monitor_port + (idx / 3) | int }}"
+    pprof_port: "{{ chainruntime.pprof_port + (idx / 3) | int }}"
     files:
       - "bc"
       - "log"

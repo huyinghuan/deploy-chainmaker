@@ -1,0 +1,29 @@
+# 部署
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+# - name: 检查已有的systemd文件
+#   ansible.builtin.stat:
+#     path: /etc/systemd/system/{{ item }}-chain.service
+#   register: systemd_file_states
+#   loop: "{{ orgid_list }}"
+- name: 准备替换systemd服务文件
+  vars:
+    description: "{{ item }} chain service"
+    run_dir: "{{ workspace.run }}/{{ item }}"
+  ansible.builtin.template:
+    src: chain.service.j2
+    dest: "/etc/systemd/system/{{ item }}-chain.service"
+    mode: 0755
+    force: true
+  become: true
+  loop: "{{ orgid_list }}"
+- name: 拷贝启动脚本便于测试
+  vars:
+    run_dir: "{{ workspace.run }}/{{ item }}"
+  ansible.builtin.template:
+    src: start.sh.j2
+    dest: "{{ workspace.run }}/{{ item }}/start.sh"
+    mode: 0755
+    force: true
+  become: true
+  loop: "{{ orgid_list }}"

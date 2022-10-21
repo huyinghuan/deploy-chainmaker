@@ -1,6 +1,11 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
 - name: 打包配置文件
   community.general.archive:
-    path: "{{ workspace.run }}"
+    path:
+      - "{{ workspace.run }}/{{ orgid_list[0] }}/bc.yml"
+      - "{{ workspace.run }}/{{ orgid_list[0] }}/log.yml"
+      - "{{ workspace.run }}/{{ orgid_list[0] }}/chainmaker.yml"
     dest: "/tmp/config.zip"
     mode: 0644
     format: zip

@@ -1,6 +1,11 @@
+- name: 是否已经编译完成了
+  ansible.builtin.stat:
+    path: "{{ workspace.compile }}/{{ bin }}"
+  register: bin_file_stat
 - name: GOPATH
   ansible.builtin.import_tasks: gopath.yml
   tags: clone
+  when: not bin_file_stat.stat.exists or force
 - name: Chainmaker项目clone
   ansible.builtin.git:
     repo: "https://{{ chainmaker.username | urlencode }}:{{ chainmaker.password | urlencode }}@{{ chainmaker.repo }}"
@@ -10,12 +15,14 @@
     depth: 1
     single_branch: true
   tags: clone
+  when: not bin_file_stat.stat.exists or force
 - name: 编译脚本拷贝
   ansible.builtin.template:
     src: compile.sh.j2
     dest: "{{ workspace.compile }}/{{ chainmaker.name }}/compile.ansible.sh"
     mode: 0755
   tags: [clone]
+  when: not bin_file_stat.stat.exists or force
 - name: 编译
   ansible.builtin.command: ./compile.ansible.sh
   args:
@@ -23,7 +30,4 @@
   register: result
   changed_when: true
   tags: compile_bin
-- name: Show Logs
-  ansible.builtin.debug:
-    msg: "{{ result.stdout_lines }}"
-  tags: compile_bin
+  when: not bin_file_stat.stat.exists or force

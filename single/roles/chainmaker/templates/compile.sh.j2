@@ -7,11 +7,16 @@ export PATH={{ gopath }}/bin:$PATH
 DATETIME=$(date "+%Y%m%d%H%M%S")
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT=$(git log --pretty=format:'%h' -n 1)
-LOCALCONF_HOME=chainmaker.org/chainmaker-go/blockchain
+LOCALCONF_HOME=chainmaker.org/chainmaker-go/module/blockchain
+version="$LOCALCONF_HOME.CurrentVersion={{ chainmaker.version }}"
 buildTime="$LOCALCONF_HOME.BuildDateTime=${DATETIME}"
 gitBranch="$LOCALCONF_HOME.GitBranch=${GIT_BRANCH}"
-version="$LOCALCONF_HOME.CurrentVersion={{ chainmaker.version }}"
 commit="$LOCALCONF_HOME.GitCommit=${GIT_COMMIT}"
-rm go.sum
+rm -rf go.sum
+cd main
 {{ chainmaker.go_compile_version }} mod tidy
-{{ chainmaker.go_compile_version }} build -ldflags="-X '$buildTime' -X '$gitBranch' -X '$version' -X '$commit'" -o {{ workspace.compile }}/{{ bin }} main/main.go
+{{ chainmaker.go_compile_version }} build -ldflags="-X '$buildTime' \
+    -X '$gitBranch' \
+    -X '$version' \
+    -X '$commit'" \
+    -o {{ workspace.compile }}/{{ bin }}

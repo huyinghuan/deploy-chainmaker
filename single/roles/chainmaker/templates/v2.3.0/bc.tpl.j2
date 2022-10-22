@@ -121,9 +121,9 @@ consensus:
   # Consensus node list
   nodes:
     {% for orgid in orgid_list -%}
-    - org_id: {{ orgid }}.{{ crypto_config.domain }}
+    - org_id: "{{ orgid }}.{{ crypto_config.domain }}"
       node_id:
-        - {{ nodeid_list[loop.index-1] }}
+        - "{{ nodeid_list[loop.index-1] }}"
     {% endfor %}
   # We can specify other consensus config here in key-value format.
   ext_config:
@@ -134,7 +134,7 @@ consensus:
 # When in permessionedWithKey mode or public mode, it represents the admin users.
 trust_roots:
   {% for orgid in orgid_list -%}
-  - org_id: {{ orgid }}.{{ crypto_config.domain }}
+  - org_id: "{{ orgid }}.{{ crypto_config.domain }}"
     root:
       - "./crypto-config/{{ orgid }}.{{crypto_config.domain}}/ca/ca.crt"
   {% endfor %}

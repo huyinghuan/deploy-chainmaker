@@ -3,10 +3,15 @@
   tags: systemd_enable
 - name: 开机启动systemd服务
   ansible.builtin.systemd:
-    name: "{{ orgid_list[idx] }}-chain"
+    name: "{{ item }}-chain.service"
     enabled: true
   loop: "{{ orgid_list }}"
-  loop_control:
-    index_var: idx
   become: true
   tags: systemd_enable
+  when: ansible_architecture != "aarch64"
+- name: 开机启动systemd服务
+  ansible.builtin.command: "systemctl enable {{ item }}-chain.service"
+  loop: "{{ orgid_list }}"
+  become: true
+  tags: systemd_enable
+  when: ansible_architecture == "aarch64"

@@ -1,4 +1,6 @@
 - name: 单机部署链
   hosts: single_server
+  become: true
   roles:
     - { role: chainmaker }
+    - { role: dev }

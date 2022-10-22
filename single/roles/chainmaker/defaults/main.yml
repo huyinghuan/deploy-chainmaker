@@ -21,9 +21,9 @@ chainruntime: # 链运行时配置
     runtime_port: 32351
     engine_port: 22351
 workspace:
-  compile: /data/compiler
-  run: /data/chainmaker_runtime
-  data_save: /data/chain_store # 单机模式下 log 会存储 /data/data/$orgid/log, 区块会存储 /data/data/$orgid/data，其他类似
+  compile: /data/chainmaker/compiler
+  run: /data/chainmaker/runtime
+  data_save: /data/chainmaker/data # 单机模式下 log 会存储 /data/data/$orgid/log, 区块会存储 /data/data/$orgid/data，其他类似
 
 bin: chainmaker
 chainmaker:

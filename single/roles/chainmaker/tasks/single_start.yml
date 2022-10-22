@@ -4,7 +4,7 @@
   tags: restart
 - name: 启动systemd服务
   ansible.builtin.systemd:
-    name: "{{ orgid_list[idx] }}-chain"
+    name: "{{ orgid_list[idx] }}-chain.service"
     state: restarted
     daemon_reload: true
   loop: "{{ orgid_list }}"

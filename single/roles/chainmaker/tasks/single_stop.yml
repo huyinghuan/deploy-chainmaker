@@ -3,12 +3,10 @@
   tags: stop
 - name: 停止systemd服务
   ansible.builtin.systemd:
-    name: "{{ orgid_list[idx] }}-chain"
+    name: "{{ item }}-chain.service"
     state: stopped
     daemon_reload: true
   failed_when: false
   loop: "{{ orgid_list }}"
-  loop_control:
-    index_var: idx
   become: true
   tags: stop

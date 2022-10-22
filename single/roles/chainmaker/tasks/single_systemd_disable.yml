@@ -3,11 +3,9 @@
   tags: systemd_disable
 - name: 禁止systemd服务开机启动
   ansible.builtin.systemd:
-    name: "{{ orgid_list[idx] }}-chain"
+    name: "{{ item }}-chain.service"
     enabled: false
   loop: "{{ orgid_list }}"
-  loop_control:
-    index_var: idx
   become: true
   tags: systemd_disable
   failed_when: false

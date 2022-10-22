@@ -1,8 +1,11 @@
+- name: 等待5秒日志出来
+  ansible.builtin.pause:
+    seconds: 5
 - name: 引入组织id变量
   ansible.builtin.import_tasks: single_get_orglist.yml
 - name: 获取启动日志
   ansible.builtin.shell: |
-    cat {{ workspace.data_save }}/{{ item }}/log/system.log.2022102215 | grep 'ERROR\|pub block\|all necessary'
+    cat {{ workspace.data_save }}/{{ item }}/log/system.log | grep 'ERROR\|pub block\|all necessary'
   register: logs
   loop: "{{ orgid_list }}"
   check_mode: false

@@ -1,0 +1,16 @@
+- name: 重置环境
+  hosts: single_server
+  become: true
+  roles:
+    - { role: dev }
+  tasks:
+    - name: 停止服务
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_stop.yml
+      tags: stop
+    - name: 重启服务
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_start.yml
+      tags: restart

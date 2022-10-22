@@ -22,16 +22,21 @@
 - centos stream 8
 - armbian aarch64 【不支持wxvm,官方没提供相关动态库】
 
+不支持 
+
+- go-evm
 
 ## 单机部署
+
+注意！！ 非`root`用户执行，所有命令均需加 `-K` 参数, 如 `ansible-playbook -i hosts single.playbook.yml -K`
 
 ### 本机执行 【即在自己电脑上用ansible远程在服务器运行命令】
 
 #### 准备
 
 ```
-git clone https://github.com/huyinghuan/deploy-chainmake.git
-cd deploy-chainmake/single
+git clone https://github.com/huyinghuan/deploy-chainmaker.git
+cd deploy-chainmaker/single
 ```
 
 - 编辑 `hosts` 文件，在其中`single_server`配置服务器ip地址 和服务器登录用户名 
@@ -51,8 +56,8 @@ ansible-playbook -i hosts single.playbook.yml # -K # 非root用户 需要加上 
 
 #### 准备
 ```
-git clone https://github.com/huyinghuan/deploy-chainmake.git
-cd deploy-chainmake/single
+git clone https://github.com/huyinghuan/deploy-chainmaker.git
+cd deploy-chainmaker/single
 ```
 
 - 编辑 `single.playbook.yml` 文件，在其中`hosts: single_server` 改为: `hosts: localhost`
@@ -68,12 +73,21 @@ cd deploy-chainmake/single
 ansible-playbook single.playbook.yml # -K # 非root用户 需要加上 -K 参数
 ```
 
+### 其他操作
+
+- 查看是否启动成功【由于初始化启动不一定能及时读取到日志】 `ansible-playbook -i hosts single.playbook.yml --tags start_check`
+- 停止进程 `ansible-playbook -i hosts single-opt.playbook.yml --tags stop`
+- 重启进程 `ansible-playbook -i hosts single-opt.playbook.yml --tags restart`
+- 清除所有数据,包括进程,区块，日志等 `ansible-playbook -i hosts single-reset.playbook.yml`
 ## 多机房部署
+
+TODO
 
 ### 本机执行
 
-```bash
-```
-
 ### 【不可用】服务器执行
 
+## 其他说明
+
+- 一般配置:  `single/roles/chainmaker/defaults/main.yml`
+- 更多配置: `single/roles/chainmaker/templates/v2.3.0/*.j2`

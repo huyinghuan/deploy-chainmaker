@@ -1,0 +1,27 @@
+- name: 软件版本检查
+  ansible.builtin.import_tasks: check.yml
+  tags: [prepare, prepare_check]
+- name: 准备目录
+  ansible.builtin.import_tasks: single_prepare_dir.yml
+  tags: [prepare, prepare_dir]
+- name: 编译链运行时二进制
+  ansible.builtin.import_tasks: compile.yml
+  tags: [prepare, prepare_compile]
+- name: 编译证书工具
+  ansible.builtin.import_tasks: compile_certstools.yml
+  tags: [prepare, prepare_certs_tool]
+- name: 生成证书
+  ansible.builtin.import_tasks: gen_crts.yml
+  tags: [prepare, prepare_certs]
+- name: 生成运行时配置文件
+  ansible.builtin.import_tasks: single_gen_runtime_config.yml
+  tags: [prepare, prepare_runtime_config]
+- name: 拷贝运行文件
+  ansible.builtin.import_tasks: single_run_prepare.yml
+  tags: [prepare, prepare_run]
+- name: 准备Systemd
+  ansible.builtin.import_tasks: single_run_systemd.yml
+  tags: [prepare, systemd]
+- name: Start
+  ansible.builtin.import_tasks: single_start.yml
+  tags: [start]

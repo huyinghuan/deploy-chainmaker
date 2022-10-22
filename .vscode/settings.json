@@ -9,6 +9,7 @@
     "files.associations": {
         "*.tpl.j2": "jinja-yaml",
         "*.sh.j2": "jinja-shell",
-        "*.service.j2": "jinja-systemd"
+        "*.service.j2": "jinja-systemd",
+        "*.yml": "ansible"
     }
 }

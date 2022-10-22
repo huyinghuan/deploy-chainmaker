@@ -6,6 +6,7 @@
     src: "{{ workspace.compile }}/{{ bin }}"
     dest: "{{ workspace.run }}/{{ item }}/{{ bin }}"
     mode: 0755
+    force: true
     remote_src: true
   loop: "{{ orgid_list }}"
 - name: 拷贝证书文件到运行时目录
@@ -19,22 +20,30 @@
   ansible.builtin.copy:
     src: "{{ workspace.compile }}/{{ chainmaker.name }}/main/libwasmer_runtime_c_api.so"
     dest: "{{ workspace.run }}/{{ item }}/lib/libwasmer.so"
-    mode: 0755
+    mode: 0777
     remote_src: true
   loop: "{{ orgid_list }}"
-  when: ansible_architecture != "aarch64"
-- name: 拷贝动态连接库
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/libwasmer_aarch64.so"
-    dest: "{{ workspace.run }}/{{ item }}/lib/libwasmer.so"
-    mode: 0755
-  loop: "{{ orgid_list }}"
-  when: ansible_architecture == "aarch64"
 - name: 拷贝wx
   ansible.builtin.copy:
     src: "{{ workspace.compile }}/{{ chainmaker.name }}/main/prebuilt/linux/wxdec"
     dest: "{{ workspace.run }}/{{ item }}/lib/wxdec"
-    mode: 0755
+    mode: 0777
     remote_src: true
   loop: "{{ orgid_list }}"
-  when: ansible_architecture != "aarch64"
+- name: 拷贝动态连接库aarch64
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/libwasmer_aarch64.so"
+    dest: "{{ workspace.run }}/{{ item }}/lib/libwasmer.so"
+    mode: 0777
+    remote_src: true
+  loop: "{{ orgid_list }}"
+  when: ansible_architecture == "aarch64"
+- name: 拷贝启动脚本便于测试
+  vars:
+    run_dir: "{{ workspace.run }}/{{ item }}"
+  ansible.builtin.template:
+    src: start.sh.j2
+    dest: "{{ workspace.run }}/{{ item }}/start.sh"
+    mode: 0755
+    force: true
+  loop: "{{ orgid_list }}"

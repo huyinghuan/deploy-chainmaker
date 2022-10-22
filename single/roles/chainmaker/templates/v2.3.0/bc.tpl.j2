@@ -47,8 +47,8 @@ vm:
     - "wasmer"
     - "gasm"
     - "evm"
-    - "dockergo"
-    - "wxvm"
+    #- "dockergo"
+    #- "wxvm"
 
 # Block proposing related settings
 block:
@@ -120,8 +120,6 @@ consensus:
 
   # Consensus node list
   nodes:
-    # Each org has one or more consensus nodes.
-    # We use p2p node id to represent nodes here.
     {% for orgid in orgid_list -%}
     - org_id: {{ orgid }}.{{ crypto_config.domain }}
       node_id:
@@ -135,7 +133,6 @@ consensus:
 # Trust roots is used to specify the organizations' root certificates in permessionedWithCert mode.
 # When in permessionedWithKey mode or public mode, it represents the admin users.
 trust_roots:
-  # org id and root file path list.
   {% for orgid in orgid_list -%}
   - org_id: {{ orgid }}.{{ crypto_config.domain }}
     root:

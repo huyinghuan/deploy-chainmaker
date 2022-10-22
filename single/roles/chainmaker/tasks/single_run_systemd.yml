@@ -17,13 +17,3 @@
     force: true
   become: true
   loop: "{{ orgid_list }}"
-- name: 拷贝启动脚本便于测试
-  vars:
-    run_dir: "{{ workspace.run }}/{{ item }}"
-  ansible.builtin.template:
-    src: start.sh.j2
-    dest: "{{ workspace.run }}/{{ item }}/start.sh"
-    mode: 0755
-    force: true
-  become: true
-  loop: "{{ orgid_list }}"

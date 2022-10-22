@@ -127,10 +127,10 @@ net:
     # TLS Certificate file path.
     cert_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.tls.crt"
     # TLS enc private key file path. (only for gmtls1.1)
-    #priv_enc_key_file: ../config/{org_path}/certs/{net_cert_path}.enc.key
+    priv_enc_key_file: "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.enc.key"
 
     # TLS enc Certificate file path.
-    #cert_enc_file: ../config/{org_path}/certs/{net_cert_path}.enc.crt
+    cert_enc_file: "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.enc.crt"
 
   # The blacklist is automatically block the listed seed to connect.
   # blacklist:
@@ -229,10 +229,10 @@ rpc:
     # RPC TLS public key file path
     cert_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.tls.crt"
     # RPC enc TLS private key file path (only for gmtls1.1)
-    #priv_enc_key_file:  ../config/{org_path}/certs/{rpc_cert_path}.enc.key
+    priv_enc_key_file:  "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.enc.key" 
 
     # RPC enc TLS public key file path
-    #cert_enc_file:      ../config/{org_path}/certs/{rpc_cert_path}.enc.crt
+    cert_enc_file:     "./crypto-config/{{ current_org_id }}.{{crypto_config.domain}}/node/consensus1/consensus1.enc.crt" 
 
   # RPC blacklisted ip addresses
   blacklist:

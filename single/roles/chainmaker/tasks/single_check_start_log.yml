@@ -1,0 +1,17 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+- name: 获取启动日志
+  ansible.builtin.shell: |
+    cat {{ workspace.data_save }}/{{ item }}/log/system.log.2022102215 | grep 'ERROR\|pub block\|all necessary'
+  register: logs
+  loop: "{{ orgid_list }}"
+  check_mode: false
+  failed_when: logs.rc == 2
+  changed_when: false
+  ignore_errors: true
+- name: 输出日志
+  ansible.builtin.debug:
+    msg: "{{ item.stdout_lines }}"
+  loop: "{{ logs.results }}"
+  loop_control:
+    label: "{{ item.item }}"

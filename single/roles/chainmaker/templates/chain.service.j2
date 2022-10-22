@@ -7,7 +7,6 @@ Environment=LD_LIBRARY_PATH={{ run_dir }}/lib:$LD_LIBRARY_PATH
 Environment=PATH={{ run_dir }}/lib:$PATH
 Environment=WASMER_BACKTRACE=1
 WorkingDirectory={{ run_dir }}
-RootDirectory={{ run_dir }}
 
 Type=simple
 ExecStart={{ run_dir }}/{{ bin }} start -c {{ run_dir }}/chainmaker.yml

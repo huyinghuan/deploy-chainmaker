@@ -1,0 +1,16 @@
+- name: 关闭systemd服务
+  ansible.builtin.import_tasks: single_stop.yml
+- name: Disable systemd services
+  ansible.builtin.import_tasks: single_systemd_disable.yml
+- name: 移除systemd文件
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}-chain.service"
+    state: absent
+  loop: "{{ orgid_list }}"
+- name: "清空数据"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ workspace.data_save }}"
+    - "{{ workspace.run }}"

@@ -1,0 +1,13 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+  tags: systemd_disable
+- name: 禁止systemd服务开机启动
+  ansible.builtin.systemd:
+    name: "{{ orgid_list[idx] }}-chain"
+    enabled: false
+  loop: "{{ orgid_list }}"
+  loop_control:
+    index_var: idx
+  become: true
+  tags: systemd_disable
+  failed_when: false

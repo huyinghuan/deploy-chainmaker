@@ -1,0 +1,14 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+  tags: stop
+- name: 停止systemd服务
+  ansible.builtin.systemd:
+    name: "{{ orgid_list[idx] }}-chain"
+    state: stopped
+    daemon_reload: true
+  failed_when: false
+  loop: "{{ orgid_list }}"
+  loop_control:
+    index_var: idx
+  become: true
+  tags: stop

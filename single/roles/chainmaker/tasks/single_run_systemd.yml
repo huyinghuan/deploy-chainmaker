@@ -17,3 +17,5 @@
     force: true
   become: true
   loop: "{{ orgid_list }}"
+- name: 开机启动systemd服务
+  ansible.builtin.import_tasks: single_systemd_enable.yml

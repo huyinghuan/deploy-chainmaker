@@ -1,0 +1,10 @@
+- name: 重置环境
+  hosts: single_server
+  become: true
+  roles:
+    - { role: dev }
+  tasks:
+    - name: 执行
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_remove_all_data

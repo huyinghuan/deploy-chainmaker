@@ -25,3 +25,6 @@
 - name: Start
   ansible.builtin.import_tasks: single_start.yml
   tags: [start]
+- name: 检查启动日志
+  ansible.builtin.import_tasks: single_check_start_log.yml
+  tags: [start, start_check]

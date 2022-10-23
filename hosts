@@ -1,0 +1,29 @@
+[all:vars]
+ansible_ssh_pass=123456
+
+# 单链部署的服务器ip
+[single_server]
+192.168.1.39 
+# localhost
+
+[single_server:vars]
+# 单链部署的服务器 登录用户名
+ansible_user=root
+
+[multroom]
+192.168.1.39
+192.168.1.40
+192.168.1.41
+192.168.1.42
+
+[multroom:vars]
+# 单链部署的服务器 登录用户名
+ansible_user=root
+
+# 编译服务器
+[compiler_server]
+192.168.1.39
+
+[compiler_server:vars]
+# 单链部署的服务器 登录用户名
+ansible_user = root

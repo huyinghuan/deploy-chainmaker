@@ -36,11 +36,13 @@
 
 ```
 git clone https://github.com/huyinghuan/deploy-chainmaker.git
-cd deploy-chainmaker/single
+cd deploy-chainmaker
 ```
 
 - 编辑 `hosts` 文件，在其中`single_server`配置服务器ip地址 和服务器登录用户名 
-- 编辑 `ansible.cfg`文件，将`private_key_file`指向服务器的登录私钥
+- 远程登录：【默认方式为密码登录】
+    - 如果采用密钥登录: 编辑 `ansible.cfg`文件，将`private_key_file`指向服务器的登录私钥, 注释掉`hosts`中所有的`ansible_ssh_pass`
+    - 如果采用密码登录编辑 `hosts`中所有的 `ansible_ssh_pass`
 - 编辑 `roles/chainmaker/defaults/main.yml` 
     - username 为 https://git.chainmaker.org.cn/ 登录名
     - password 为 相关密码
@@ -57,10 +59,10 @@ ansible-playbook -i hosts single.playbook.yml # -K # 非root用户 需要加上 
 #### 准备
 ```
 git clone https://github.com/huyinghuan/deploy-chainmaker.git
-cd deploy-chainmaker/single
+cd deploy-chainmaker
 ```
 
-- 编辑 `single.playbook.yml` 文件，在其中`hosts: single_server` 改为: `hosts: localhost`
+- 编辑 `hosts` 文件，在其中`single_server` 下添加 `localhost`, 注释其他
 
 - 编辑 `roles/chainmaker/defaults/main.yml` 
     - username 为 https://git.chainmaker.org.cn/ 登录名
@@ -81,13 +83,34 @@ ansible-playbook single.playbook.yml # -K # 非root用户 需要加上 -K 参数
 - 清除所有数据,包括进程,区块，日志等 `ansible-playbook -i hosts single-reset.playbook.yml`
 ## 多机房部署
 
-TODO
-
 ### 本机执行
+
+#### 准备
+
+```
+git clone https://github.com/huyinghuan/deploy-chainmaker.git
+cd deploy-chainmaker/single
+```
+
+- 编辑 `hosts` 文件，在其中`multroom` 配置服务器ip地址
+- 编辑 `hosts` 文件，在其中`compiler_server` 配置编译服务器ip地址
+    - 注意编译服务器一定要保持和部署服务器一样的系统版本，避免因为gcc等依赖库不一致导致的程序运行错误
+- 远程登录：【默认方式为密码登录】
+    - 如果采用密钥登录: 编辑 `ansible.cfg`文件，将`private_key_file`指向服务器的登录私钥, 注释掉`hosts`中所有的`ansible_ssh_pass`
+    - 如果采用密码登录编辑 `hosts`中所有的 `ansible_ssh_pass`
+- 编辑 `roles/chainmaker/defaults/main.yml` 
+    - username 为 https://git.chainmaker.org.cn/ 登录名
+    - password 为 相关密码
+    - 其他配置请酌情更改
+
+#### 执行
+
+
+
 
 ### 【不可用】服务器执行
 
 ## 其他说明
 
-- 一般配置:  `single/roles/chainmaker/defaults/main.yml`
-- 更多配置: `single/roles/chainmaker/templates/v2.3.0/*.j2`
+- 一般配置:  `roles/chainmaker/defaults/main.yml`
+- 更多配置: `roles/chainmaker/templates/v2.3.0/*.j2`

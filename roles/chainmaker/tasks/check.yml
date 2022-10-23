@@ -1,5 +1,3 @@
-- name: Go 版本
-  ansible.builtin.import_tasks: install_go.yml
 - name: 检查gcc
   ansible.builtin.command: "gcc --version"
   register: gcc_version
@@ -41,3 +39,5 @@
     - gcc_version.rc != 0 or glibc_version.rc != 0
     - ansible_os_family == 'Debian'
   become: true
+- name: Go 版本
+  ansible.builtin.import_tasks: install_go.yml

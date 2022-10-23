@@ -1,0 +1,7 @@
+- name: 编译服务器准备工作
+  hosts: compiler_server
+  tasks:
+    - name: 软件版本检查
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: check

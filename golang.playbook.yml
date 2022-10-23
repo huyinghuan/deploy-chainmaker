@@ -1,0 +1,39 @@
+- name: 准备golang
+  hosts: compiler_server
+  tags: [golang, init]
+  become: true
+  vars_prompt:
+  tasks:
+    - name: 设置默认版本
+      ansible.builtin.set_fact:
+        go_version: "1.19.2"
+      when: go_version is not defined
+    - name: 设置默认版本
+      ansible.builtin.set_fact:
+        os_arch: "amd64"
+      when: os_arch is not defined
+    - name: 下载安装包
+      ansible.builtin.get_url:
+        url: https://golang.google.cn/dl/go{{ go_version }}.linux-{{ os_arch }}.tar.gz
+        dest: /root/golang{{ go_version }}.tar.gz
+        mode: "0440"
+    - name: 删除旧的安装
+      ansible.builtin.file:
+        path: /usr/local/go
+        state: absent
+    - name: 解压安装
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: /root/golang{{ go_version }}.tar.gz
+        dest: /usr/local
+    - name: Check Version
+      ansible.builtin.command: go version
+      changed_when: false
+      environment:
+        PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
+      register: command_output
+      tags: [golang]
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ command_output.stdout_lines }}"
+      tags: [golang]

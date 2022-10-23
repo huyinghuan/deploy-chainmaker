@@ -1,0 +1,29 @@
+- name: 检查远程是否已经有运行时文件
+  ansible.builtin.stat:
+    path: "{{ workspace.run }}/{{ item }}"
+  register: remote_runfiles
+  loop:
+    - crypto-config
+    - "{{ bin }}"
+    - lib/libwasmer.so
+    - lib/wxdec
+- name: Items2Dict
+  ansible.builtin.set_fact:
+    runfiles_stat: "{{ remote_runfiles.results | items2dict(key_name='item', value_name='stat') }}"
+- name: Copy Bin And Lib
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0777
+  when: not item.stat.exists
+  loop:
+    - { src: "build/{{ bin }}", dest: "{{ workspace.run }}/{{ bin }}", stat: "{{ runfiles_stat[bin] }}" }
+    - { src: "build/libwasmer.so", dest: "{{ workspace.run }}/lib/libwasmer.so", stat: "{{ runfiles_stat['lib/libwasmer.so'] }}" }
+    - { src: "build/wxdec", dest: "{{ workspace.run }}/lib/wxdec", stat: "{{ runfiles_stat['lib/wxdec'] }}" }
+  loop_control:
+    label: "{{ item.src }}"
+- name: Copy Certs
+  ansible.builtin.unarchive:
+    src: "{{ inventory_dir }}/build/crypto-config.zip"
+    dest: "{{ workspace.run }}"
+  when: not runfiles_stat['crypto-config'].exists

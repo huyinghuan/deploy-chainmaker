@@ -1,0 +1,13 @@
+- name: 创建存储目录
+  ansible.builtin.file:
+    path: "{{ workspace.data_save }}/{{ item }}"
+    state: directory
+    mode: 0777
+  loop:
+    - "log"
+    - "data"
+- name: 创建运行时目录
+  ansible.builtin.file:
+    path: "{{ workspace.run }}/lib"
+    state: directory
+    mode: 0777

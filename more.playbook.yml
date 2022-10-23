@@ -1,0 +1,11 @@
+- name: 部署多机房长安链
+  hosts: multroom
+  tasks:
+    - name: 创建存储目录
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_prepare_dir
+    - name: 拷贝运行时文件
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_copy_runtime

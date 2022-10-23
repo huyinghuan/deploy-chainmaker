@@ -17,6 +17,11 @@
     msg: "{{ glibc_version.stdout_lines[0] }}"
   when: glibc_version.rc == 0
   # 如果没有安装gcc和glibc，就安装， centos 使用yum, ubuntu使用apt
+- name: 检查git
+  ansible.builtin.command: "git --version"
+  register: git_version
+  ignore_errors: true
+  changed_when: false
 - name: 安装gcc和glibc
   ansible.builtin.yum:
     name: "{{ item }}"
@@ -24,8 +29,9 @@
   loop:
     - gcc
     - glibc
+    - git
   when:
-    - gcc_version.rc != 0 or glibc_version.rc != 0
+    - gcc_version.rc != 0 or glibc_version.rc != 0 or git_version.rc != 0
     - ansible_os_family == 'RedHat'
   become: true
 - name: 安装gcc和glibc
@@ -35,6 +41,7 @@
   loop:
     - build-essential
     - libc6
+    - git
   when:
     - gcc_version.rc != 0 or glibc_version.rc != 0
     - ansible_os_family == 'Debian'

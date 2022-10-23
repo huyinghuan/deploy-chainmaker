@@ -1,0 +1,67 @@
+- name: 编译服务器准备工作
+  hosts: compiler_server
+  tasks:
+    - name: 检查本地是否已经有运行时文件了
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/build/{{ item }}"
+      register: runfiles
+      loop:
+        - crypto-config.zip
+        - "{{ bin }}"
+        - libwasmer.so
+        - wxdec
+      delegate_to: localhost
+    - name: Items2Dict
+      ansible.builtin.set_fact:
+        runfiles_stat: "{{ runfiles.results | items2dict(key_name='item', value_name='stat') }}"
+    - name: 软件版本检查
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: check
+    - name: 编译链运行时二进制
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: compile
+      tags: [prepare, prepare_compile]
+    - name: 编译证书工具
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: compile_certstools
+      tags: [prepare, prepare_certs_tool]
+    - name: 生成证书
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: gen_crts
+      tags: [prepare, prepare_certs]
+    - name: 打包证书文件
+      community.general.archive:
+        path: "{{ workspace.compile }}/crypto-config"
+        dest: "/tmp/crypto-config.zip"
+        mode: 0644
+        format: zip
+        remove: false
+      when: not runfiles_stat['crypto-config.zip'].exists
+    - name: 下载配置文件
+      ansible.builtin.fetch:
+        src: /tmp/crypto-config.zip
+        dest: "{{ inventory_dir }}/build/crypto-config.zip"
+        mode: 0755
+        flat: true
+      when: not runfiles_stat['crypto-config.zip'].exists
+    - name: 下载运行时文件
+      ansible.builtin.fetch:
+        src: "{{ workspace.compile }}/{{ bin }}"
+        dest: "{{ inventory_dir }}/build/{{ bin }}"
+        mode: 0755
+        flat: true
+      when: not runfiles_stat[bin].exists
+    - name: 下载动态库
+      ansible.builtin.fetch:
+        src: "{{ workspace.compile }}/{{ chainmaker.name }}/{{ item.src }}"
+        dest: "{{ inventory_dir }}/build/{{ item.dest }}"
+        mode: 0755
+        flat: true
+      when: not runfiles_stat[item.dest].exists
+      loop:
+        - {src: "main/libwasmer_runtime_c_api.so", dest: "libwasmer.so"}
+        - {src: "main/prebuilt/linux/wxdec", dest: "wxdec"}

@@ -1,0 +1,7 @@
+- name: 禁止systemd服务开机启动
+  ansible.builtin.systemd:
+    name: "{{ bing }}.service"
+    enabled: false
+  become: true
+  tags: systemd_disable
+  failed_when: false

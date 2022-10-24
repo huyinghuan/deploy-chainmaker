@@ -1,0 +1,8 @@
+- name: 重置环境
+  hosts: multroom
+  become: true
+  tasks:
+    - name: 执行
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_remove_all_data

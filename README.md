@@ -125,8 +125,12 @@ ToBe Test
 ansible-playbok -i hosts more.playbook.yml
 ```
 
+### 其他操作
 
-### 【不可用】服务器执行
+- 查看是否启动成功【由于初始化启动不一定能及时读取到日志】 `ansible-playbook -i hosts more.playbook.yml --tags start_check`
+- 停止进程 `ansible-playbook -i hosts more-opt.playbook.yml --tags stop`
+- 重启进程 `ansible-playbook -i hosts more-opt.playbook.yml --tags restart`
+- 清除所有数据,包括进程,区块，日志等 `ansible-playbook -i hosts more-reset.playbook.yml`
 
 ## 其他说明
 

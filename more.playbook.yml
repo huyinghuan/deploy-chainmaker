@@ -1,6 +1,13 @@
 - name: 部署多机房长安链
   hosts: multroom
   tasks:
+    - name: Disable SELinux
+      ansible.posix.selinux:
+        state: disabled
+      failed_when: false
+      when: ansible_selinux.status != "disabled"
+      become: true
+      tags: start
     - name: 创建存储目录
       ansible.builtin.import_role:
         name: chainmaker
@@ -21,3 +28,9 @@
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: more_start
+      tags: start
+    - name: 检查启动日志
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_check_start_log
+      tags: [start, start_check]

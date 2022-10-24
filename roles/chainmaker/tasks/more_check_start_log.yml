@@ -1,0 +1,14 @@
+- name: 等待5秒日志出来
+  ansible.builtin.pause:
+    seconds: 5
+- name: 获取启动日志
+  ansible.builtin.shell: |
+    cat {{ workspace.data_save }}/log/system.log | grep 'ERROR\|pub block\|all necessary'
+  register: logs
+  check_mode: false
+  failed_when: logs.rc == 2
+  changed_when: false
+  ignore_errors: true
+- name: 输出日志
+  ansible.builtin.debug:
+    msg: "{{ logs.stdout_lines }}"

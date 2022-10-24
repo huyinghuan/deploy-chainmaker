@@ -1,6 +1,6 @@
 - name: 停止systemd服务
   ansible.builtin.systemd:
-    name: "{{ bing }}.service"
+    name: "{{ bin }}.service"
     state: stopped
     daemon_reload: true
   become: true

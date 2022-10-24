@@ -4,7 +4,7 @@
   ansible.builtin.import_tasks: more_systemd_disable.yml
 - name: 移除systemd文件
   ansible.builtin.file:
-    path: "/etc/systemd/system/{{ chainmaker }}.service"
+    path: "/etc/systemd/system/{{ bin }}.service"
     state: absent
 - name: "清空数据"
   ansible.builtin.file:

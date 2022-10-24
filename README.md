@@ -2,9 +2,9 @@
 
 服务器仅支持linux系统
 
-该脚本执行环境必须须安装 `ansible` 和 `ansible-galaxy collection install community.general`，
+该脚本执行环境必须须安装 `ansible`， 然后执行`ansible-galaxy collection install community.general`
 
-`ansible` 安装见: https://docs.ansible.com/ansible/latest/installation_guide/index.html
+`ansible` 安装见: https://docs.ansible.com/ansible/latest/installation_guide/index.html 【简单点就是 `yum/apt/dnf install ansible`】
 
 本文档命令可在本机也可在服务器执行。
 
@@ -130,7 +130,6 @@ ansible-playbok -i hosts more-compile.playbook.yml
 
 2. 分发二进制，证书，启动链
 
-ToBe Test
 
 ```bash
 ansible-playbok -i hosts more.playbook.yml

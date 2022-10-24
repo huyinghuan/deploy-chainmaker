@@ -13,10 +13,11 @@
       ansible.builtin.import_role:
         name: chainmaker
         tasks_from: more_copy_config
-    # - name: Debug
-    #   ansible.builtin.debug:
-    #     msg: "im at {{ idx }}, i am {{ orgid_list[idx] }}, nodeid is {{ nodeid_list[idx] }}"
-    #   when: item == inventory_hostname
-    #   loop: "{{ groups['multroom'] }}"
-    #   loop_control:
-    #     index_var: idx
+    - name: 准备替换systemd服务文件
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_copy_systemd
+    - name: 启动
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: more_start

@@ -1,0 +1,23 @@
+# 部署
+- name: 准备替换systemd服务文件
+  vars:
+    description: "{{ bin }} service"
+    run_dir: "{{ workspace.run }}"
+  ansible.builtin.template:
+    src: chain.service.j2
+    dest: "/etc/systemd/system/{{ bin }}.service"
+    mode: 0755
+    force: true
+  become: true
+- name: 开机启动systemd服务 (x86_64)
+  ansible.builtin.systemd:
+    name: "{{ bin }}.service"
+    enabled: true
+  become: true
+  tags: systemd_enable
+  when: ansible_architecture != "aarch64"
+- name: 开机启动systemd服务 (aarch64)
+  ansible.builtin.command: "systemctl enable {{ bin }}.service"
+  become: true
+  tags: systemd_enable
+  when: ansible_architecture == "aarch64"

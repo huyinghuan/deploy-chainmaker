@@ -12,7 +12,7 @@
     pprof_port: "{{ chainruntime.pprof_port }}"
     data_save: "{{ workspace.data_save }}"
     ip_list: "{{ groups['multroom'] }}"
-    port_list: "{{ range(crypto_config.count) | map('regex_replace', '(.+)' , chainruntime.p2p_port) |  list}}"
+    port_list: "{{ range(crypto_config.count) | map('regex_replace', '(.+)', chainruntime.p2p_port) | list }}"
     files:
       - "bc"
       - "log"
@@ -24,10 +24,6 @@
     dest: "{{ workspace.run }}/{{ item.1 }}.yml"
     mode: 0644
     force: true
-  # ansible.builtin.debug:
-  #   msg:
-  #     - "im at {{ current_org_id }}"
-  #     - "{{ item.0 }} {{ item.1 }}"
   when: item.0 == inventory_hostname
   loop: "{{ groups['multroom'] | product(files) | list }}"
   loop_control:

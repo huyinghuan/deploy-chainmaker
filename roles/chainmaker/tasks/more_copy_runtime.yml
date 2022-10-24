@@ -10,16 +10,28 @@
 - name: Items2Dict
   ansible.builtin.set_fact:
     runfiles_stat: "{{ remote_runfiles.results | items2dict(key_name='item', value_name='stat') }}"
-- name: Copy Bin And Lib
+- name: Copy Bin And Lib (x86_64)
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: 0777
-  when: not item.stat.exists
+  when: not item.stat.exists and ansible_architecture != "aarch64"
   loop:
     - { src: "build/{{ bin }}", dest: "{{ workspace.run }}/{{ bin }}", stat: "{{ runfiles_stat[bin] }}" }
     - { src: "build/libwasmer.so", dest: "{{ workspace.run }}/lib/libwasmer.so", stat: "{{ runfiles_stat['lib/libwasmer.so'] }}" }
     - { src: "build/wxdec", dest: "{{ workspace.run }}/lib/wxdec", stat: "{{ runfiles_stat['lib/wxdec'] }}" }
+  loop_control:
+    label: "{{ item.src }}"
+- name: Copy Bin And Lib (aarch64)
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0777
+  when: not item.stat.exists and ansible_architecture == "aarch64"
+  loop:
+    - { src: "{{ inventory_dir }}/build/{{ bin }}", dest: "{{ workspace.run }}/{{ bin }}", stat: "{{ runfiles_stat[bin] }}" }
+    - { src: "{{ role_path }}/files/libwasmer_aarch64.so", dest: "{{ workspace.run }}/lib/libwasmer.so", stat: "{{ runfiles_stat['lib/libwasmer.so'] }}" }
+  # - { src: "{{ inventory_dir }}/build/wxdec", dest: "{{ workspace.run }}/lib/wxdec", stat: "{{ runfiles_stat['lib/wxdec'] }}" }
   loop_control:
     label: "{{ item.src }}"
 - name: Copy Certs
@@ -27,3 +39,10 @@
     src: "{{ inventory_dir }}/build/crypto-config.zip"
     dest: "{{ workspace.run }}"
   when: not runfiles_stat['crypto-config'].exists
+- name: 拷贝启动脚本便于测试
+  vars:
+    run_dir: "{{ workspace.run }}"
+  ansible.builtin.template:
+    src: start.sh.j2
+    dest: "{{ workspace.run }}/start.sh"
+    mode: 0755

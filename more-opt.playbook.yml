@@ -1,14 +1,14 @@
 - name: 重置环境
-  hosts: single_server
+  hosts: multroom
   become: true
   tasks:
     - name: 停止服务
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: single_stop.yml
+        tasks_from: more_stop.yml
       tags: stop
     - name: 重启服务
       ansible.builtin.import_role:
         name: chainmaker
-        tasks_from: single_start.yml
+        tasks_from: more_start.yml
       tags: restart

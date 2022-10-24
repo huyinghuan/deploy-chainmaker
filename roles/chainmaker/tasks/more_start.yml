@@ -1,0 +1,10 @@
+- name: 关闭服务
+  ansible.builtin.import_tasks: more_stop.yml
+  tags: restart
+- name: 启动systemd服务
+  ansible.builtin.systemd:
+    name: "{{ bing }}.service"
+    state: restarted
+    daemon_reload: true
+  become: true
+  tags: restart

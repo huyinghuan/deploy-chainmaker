@@ -83,13 +83,17 @@ ansible-playbook single.playbook.yml # -K # 非root用户 需要加上 -K 参数
 - 清除所有数据,包括进程,区块，日志等 `ansible-playbook -i hosts single-reset.playbook.yml`
 ## 多机房部署
 
+通过测试:
+
+- Rocky Linux 8.6 (即类似centos 8.6的社区版)
+
 ### 本机执行
 
 #### 准备
 
 ```
 git clone https://github.com/huyinghuan/deploy-chainmaker.git
-cd deploy-chainmaker/single
+cd deploy-chainmaker
 ```
 
 - 编辑 `hosts` 文件，在其中`multroom` 配置服务器ip地址
@@ -105,7 +109,21 @@ cd deploy-chainmaker/single
 
 #### 执行
 
+1. 编译二进制，申请证书等
 
+```bash
+ansible-playbok -i hosts more-compile.playbook.yml
+```
+
+该步骤会在编译服务器上的二进制文件和证书文件拷贝到本机上，便于下一步分发到各个服务器上
+
+2. 分发二进制，证书，启动链
+
+ToBe Test
+
+```bash
+ansible-playbok -i hosts more.playbook.yml
+```
 
 
 ### 【不可用】服务器执行

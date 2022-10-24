@@ -1,0 +1,9 @@
+- name: 获取节点id
+  ansible.builtin.shell: |
+    cat {{ '%s/crypto-config/%s%d.%s/node/consensus1/consensus1.nodeid' % (workspace.run, crypto_config.host_name, item, crypto_config.domain) }}
+  loop: "{{ range(1, crypto_config.count + 1) }}"
+  changed_when: false
+  register: nodeid
+- name: 节点id 列表赋值
+  ansible.builtin.set_fact:
+    nodeid_list: "{{ nodeid.results | map(attribute='stdout') | list }}"

@@ -1,0 +1,34 @@
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+  run_once: true
+- name: 引入节点id变量
+  ansible.builtin.import_tasks: more_get_nodeid.yml
+  run_once: true
+- name: 拷贝配置文件
+  vars:
+    p2p_port: "{{ chainruntime.p2p_port }}"
+    rpc_port: "{{ chainruntime.rpc_port }}"
+    monitor_port: "{{ chainruntime.monitor_port }}"
+    pprof_port: "{{ chainruntime.pprof_port }}"
+    data_save: "{{ workspace.data_save }}"
+    ip_list: "{{ groups['multroom'] }}"
+    port_list: "{{ range(crypto_config.count) | map('regex_replace', '(.+)' , chainruntime.p2p_port) |  list}}"
+    files:
+      - "bc"
+      - "log"
+      - "chainmaker"
+    len: "{{ files | length }}"
+    current_org_id: "{{ orgid_list[((idx | int) / (len | int)) | int] }}"
+  ansible.builtin.template:
+    src: "{{ chainmaker.version }}/{{ item.1 }}.tpl.j2"
+    dest: "{{ workspace.run }}/{{ item.1 }}.yml"
+    mode: 0644
+    force: true
+  # ansible.builtin.debug:
+  #   msg:
+  #     - "im at {{ current_org_id }}"
+  #     - "{{ item.0 }} {{ item.1 }}"
+  when: item.0 == inventory_hostname
+  loop: "{{ groups['multroom'] | product(files) | list }}"
+  loop_control:
+    index_var: idx

@@ -114,7 +114,7 @@ net:
   # Example dns format："/dns/cm-node1.org/tcp/11301/p2p/"+nodeid
   seeds:
     {% for number in range(crypto_config.count) -%}
-    - /ip4/{{ ip_list[number] }}/tcp/{{ port_list[number] }}/p2p/{{ nodeid_list[number] }}
+    - /ip4/{{ ips[number] }}/tcp/{{ p2p_port }}/p2p/{{ nodeid_list[number] }}
     {% endfor %}
   # Network tls settings.
   tls:

@@ -10,6 +10,8 @@
     rpc_port: "{{ chainruntime.rpc_port + (idx / 3) | int }}"
     monitor_port: "{{ chainruntime.monitor_port + (idx / 3) | int }}"
     pprof_port: "{{ chainruntime.pprof_port + (idx / 3) | int }}"
+    ip_list: "{{ range(crypto_config.count) | map('regex_replace', '(.+)', '127.0.0.1') | list }}"
+    port_list: "{{ range(chainruntime.p2p_port, crypto_config.count + chainruntime.p2p_port) }}"
     files:
       - "bc"
       - "log"

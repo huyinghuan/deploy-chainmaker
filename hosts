@@ -3,12 +3,13 @@ ansible_ssh_pass=123456
 
 # 单链部署的服务器ip
 [single_server]
-r4s
-#192.168.1.39 
+192.168.1.43 # centos 8
+#t@192.168.1.44  # ubuntu系统需要加上用户名
+
 # localhost
 
-[single_server:vars]
 # 单链部署的服务器 登录用户名
+[single_server:vars]
 ansible_user=root
 
 [multroom]
@@ -17,14 +18,16 @@ ansible_user=root
 192.168.1.41
 192.168.1.42
 
+# 多机房部署的服务器 登录用户名
 [multroom:vars]
-# 单链部署的服务器 登录用户名
 ansible_user=root
 
 # 编译服务器
 [compiler_server]
 192.168.1.39
+# ubuntu系统需要加上用户名
+# t@192.168.1.44
 
-[compiler_server:vars]
 # 单链部署的服务器 登录用户名
-ansible_user = root
+[compiler_server:vars]
+ansible_user=root

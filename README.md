@@ -17,20 +17,31 @@
   
   说明: v2.2.1 版本，官方源代码的mod依赖有问题，下载后校验hash不能通过。如果有人有编译通过的方法可以提issue 
 
-已测试部署服务器系统:
-
-- centos stream 8
-- armbian aarch64 【不支持wxvm,官方没提供相关动态库】
 
 不支持 
 
 - go-evm
 
+注意！ 该脚本会禁止 `selinux` 服务
+
 ## 单机部署
 
-注意！！ 非`root`用户执行，所有命令均需加 `-K` 参数, 如 `ansible-playbook -i hosts single.playbook.yml -K`
+已测试部署服务器系统:
 
+- centos stream 8
+- armbian aarch64 【不支持wxvm,官方没提供相关动态库】
+- Rocky Linux 8.6
+- Ubuntu 20.04.5 【注意，由于ubuntu特殊性，在hosts在配置服务器ip时，需要加上用户名，如: test@192.168.1.2】
+
+注意！！ 
+    
+    非`root`用户执行，所有命令均需加 `-K` 参数, 如 `ansible-playbook -i hosts single.playbook.yml -K`
+    
+    脚本执行时间由服务器的网络和配置决定【需要下载依赖和编译二进制，比较耗费资源】
+    
 ### 本机执行 【即在自己电脑上用ansible远程在服务器运行命令】
+
+
 
 #### 准备
 

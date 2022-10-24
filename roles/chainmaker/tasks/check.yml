@@ -1,3 +1,9 @@
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+  failed_when: false
+  when: ansible_selinux.status != "disabled"
+  become: true
 - name: 检查gcc
   ansible.builtin.command: "gcc --version"
   register: gcc_version

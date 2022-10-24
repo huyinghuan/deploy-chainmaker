@@ -2,7 +2,6 @@
   hosts: compiler_server
   tags: [golang, init]
   become: true
-  vars_prompt:
   tasks:
     - name: 设置默认版本
       ansible.builtin.set_fact:

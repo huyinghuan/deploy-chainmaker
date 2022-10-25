@@ -18,7 +18,7 @@ crypto_config:
     specs: &specs_ref
       expire_year:  10
       sans:
-        - {{ crypto_config.host_name }}
+        - {{ crypto_config.domain }}
         - localhost
         - 127.0.0.1
     location: &location_ref

@@ -46,7 +46,7 @@
 #### 准备
 
 ```
-git clone https://github.com/huyinghuan/deploy-chainmaker.git
+git clone -b v2.3.0 https://github.com/huyinghuan/deploy-chainmaker.git
 cd deploy-chainmaker
 ```
 
@@ -69,7 +69,7 @@ ansible-playbook -i hosts single.playbook.yml # -K # 非root用户 需要加上 
 
 #### 准备
 ```
-git clone https://github.com/huyinghuan/deploy-chainmaker.git
+git clone -b v2.3.0 https://github.com/huyinghuan/deploy-chainmaker.git
 cd deploy-chainmaker
 ```
 
@@ -103,7 +103,7 @@ ansible-playbook single.playbook.yml # -K # 非root用户 需要加上 -K 参数
 #### 准备
 
 ```
-git clone https://github.com/huyinghuan/deploy-chainmaker.git
+git clone -b v2.3.0 https://github.com/huyinghuan/deploy-chainmaker.git
 cd deploy-chainmaker
 ```
 
@@ -146,3 +146,8 @@ ansible-playbok -i hosts more.playbook.yml
 
 - 一般配置:  `roles/chainmaker/defaults/main.yml`
 - 更多配置: `roles/chainmaker/templates/v2.3.0/*.j2`
+
+## TODO
+
+- [ ] 自动扩展节点
+- [ ] 增加合约测试

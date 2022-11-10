@@ -7,7 +7,7 @@ export PATH={{ gopath }}/bin:$PATH
 DATETIME=$(date "+%Y%m%d%H%M%S")
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT=$(git log --pretty=format:'%h' -n 1)
-LOCALCONF_HOME=chainmaker.org/chainmaker-go/module/blockchain
+LOCALCONF_HOME=chainmaker.org/chainmaker-go/blockchain
 version="$LOCALCONF_HOME.CurrentVersion={{ chainmaker.version }}"
 buildTime="$LOCALCONF_HOME.BuildDateTime=${DATETIME}"
 gitBranch="$LOCALCONF_HOME.GitBranch=${GIT_BRANCH}"

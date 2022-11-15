@@ -20,9 +20,6 @@ log:
   # Logger configuration file path.
   config_file: ./log.yml
 
-# Crypto engine config
-crypto_engine: tjfoc #support gmssl, tencentsm and tjfoc
-
 # Chains the node currently joined in
 blockchain:
   # chain id and its genesis block file path.
@@ -53,14 +50,6 @@ node:
 
   # CertKeyUsageCheck, used to check if tx sender use the proper certificate to sign transactions
   cert_key_usage_check: true
-
-  # fast sync settings
-  fast_sync:
-    # Enable it or not
-    enabled: true  # [*]
-
-    # The number of blocks that did not perform fast synchronization at the end
-    min_full_blocks: 10
 
   # PKCS#11 crypto settings
   pkcs11:
@@ -150,7 +139,7 @@ txpool:
   # tx_pool type, can be single, normal, batch.
   # By default the tx_pool type is single.
   # Note: please delete dump_tx_wal folder in storage.store_path when change tx_pool type
-  pool_type: "normal"
+  pool_type: "single"
 
   # Max common transaction count in tx_pool.
   # If tx_pool is full, the following transactions will be discarded.
@@ -242,109 +231,6 @@ rpc:
   # RPC server max send/receive message size in MB
   max_send_msg_size: 100
   max_recv_msg_size: 100
-
-tx_filter:
-  # default(store) 0; bird's nest 1; map 2; 3 sharding bird's nest
-  # 3 is recommended.
-  type: 0
-  # sharding bird's nest config
-  # total keys = sharding.length * sharding.birds_nest.length * sharding.birds_nest.cuckoo.max_num_keys
-  sharding:
-    # sharding number
-    length: 5
-    # sharding task timeout in seconds
-    timeout: 60
-    snapshot:
-      # serialize type
-      # 0 Serialization by height interval
-      # 1 Serialization by time interval
-      type: 0
-      timed:
-        # Time interval in seconds
-        interval: 10
-      block_height:
-        # Block height interval
-        interval: 10
-      # Serialization interval in seconds
-      serialize_interval: 10
-      # file path
-      path: {{ data_save }}/tx_filter
-    # bird's nest config
-    birds_nest:
-      # bird's nest size
-      length: 10
-      # Transaction filter rules
-      rules:
-        # Absolute expiration time /second
-        # Based on the number of transactions per day, for example, the current total capacity of blockchain transaction
-        # filters is 100 million, and there are 10 million transaction requests per day.
-        #
-        # total keys = sharding.length * sharding.birds_nest.length * sharding.birds_nest.cuckoo.max_num_keys
-        #
-        # absolute expire time = total keys / number of requests per day
-        absolute_expire_time: 172800
-      cuckoo:
-        # 0 NormalKey; 1 TimestampKey
-        key_type: 1
-        # num of tags for each bucket, which is b in paper. tag is fingerprint, which is f in paper.
-        # If you are using a semi-sorted bucket, the default is 4
-        # 2 is recommended.
-        tags_per_bucket: 2
-        # num of bits for each item, which is length of tag(fingerprint)
-        # 11 is recommended.
-        bits_per_item: 11
-        # keys number
-        max_num_keys: 2000000
-        # 0 TableTypeSingle normal single table
-        # 1 TableTypePacked packed table, use semi-sort to save 1 bit per item
-        # 0 is recommended
-        table_type: 0
-  # bird's nest config
-  # total keys = birds_nest.length * birds_nest.cuckoo.max_num_keys
-  birds_nest:
-    # bird's nest size
-    length: 10
-    snapshot:
-      # serialize type
-      # 0 Serialization by height interval
-      # 1 Serialization by time interval
-      type: 0
-      timed:
-        # Time interval in seconds
-        interval: 10
-      block_height:
-        # Block height interval
-        interval: 10
-      # Serialization interval in seconds
-      serialize_interval: 10
-      # file path
-      path: {{ data_save }}/tx_filter #../data/{org_id}/tx_filter
-    # Transaction filter rules
-    rules:
-      # Absolute expiration time /second
-      # Based on the number of transactions per day, for example, the current total capacity of blockchain transaction
-      # filters is 100 million, and there are 10 million transaction requests per day.
-      #
-      # total keys = sharding.length * sharding.birds_nest.length * sharding.birds_nest.cuckoo.max_num_keys
-      #
-      # absolute expire time = total keys / number of requests per day
-      absolute_expire_time: 172800
-    cuckoo:
-      # 0 NormalKey; 1 TimestampKey
-      key_type: 1
-      # num of tags for each bucket, which is b in paper. tag is fingerprint, which is f in paper.
-      # If you are using a semi-sorted bucket, the default is 4
-      # 2 is recommended.
-      tags_per_bucket: 2
-      # num of bits for each item, which is length of tag(fingerprint)
-      # 11 is recommended.
-      bits_per_item: 11
-      # keys number
-      max_num_keys: 2000000
-      # 0 TableTypeSingle normal single table
-      # 1 TableTypePacked packed table, use semi-sort to save 1 bit per item
-      # 0 is recommended
-      table_type: 0
 
 # Monitor related settings
 monitor:
@@ -519,46 +405,24 @@ storage:
 
 # Contract Virtual Machine(VM) configs
 vm:
+  # Enable docker go virtual machine
+  enable_dockervm: {{ chainruntime.go_evm.enable }}
+  # Docker go virtual machine container name
+  dockervm_container_name: chainmaker-vm-docker-go-container1
+  # Mount point in chain maker
+  dockervm_mount_path: {{ data_save }}/go
+  # Specify log file path
+  dockervm_log_path: {{ data_save }}/log/go
+  # Whether to print log at terminal
+  log_in_console: false
+  # Log level
+  log_level: INFO
+  # Unix domain socket open, used for chainmaker and docker manager communication
+  uds_open: true
+  # The size of the channel where transactions are stored in docker manager
+  tx_size: 1000
+  # Number of user Ids
+  user_num: 100
+  # Timeout per transaction, Unit: second
+  time_limit: 2
   # Golang runtime in docker container
-  go:
-    # Enable docker go virtual machine, default: false
-    enable: {{ chainruntime.go_evm.enable }}
-    # Mount data path in chainmaker, include contracts, uds socks
-    data_mount_path: {{ data_save }}/go
-    # Mount log path in chainmaker
-    log_mount_path: {{ data_save }}/log/go
-    # Communication protocol, used for chainmaker and docker manager communication
-    # 1. tcp: docker vm uses TCP to communicate with chain
-    # 2. uds: docker vm uses unix domain socket to communicate with chain
-    protocol: {{ chainruntime.go_evm.protocol }}
-    # If use a customized VM configuration file, supplement it; else, do not configure
-    # Priority: chainmaker.yml > vm.yml > default settings
-    # dockervm_config_path: /config_path/vm.yml
-    # Whether to print log on terminal
-    log_in_console: false
-    # Log level of docker vm go
-    log_level: {{ chainruntime.go_evm.log_level }}
-
-    # Grpc max send message size of the following 2 servers, Default size is 100, unit: MB
-    max_send_msg_size: 100
-    # Grpc max receive message size of the following 2 servers, Default size is 100, unit: MB
-    max_recv_msg_size: 100
-    # Grpc dialing timeout of the following 2 servers, default size is 100, uint: s
-    dial_timeout: 10
-
-    # max process num for execute original txs
-    max_concurrency: 20
-
-    #  Configs of docker runtime server (handle messages with contract sandbox)
-    runtime_server:
-      # Runtime server port, default 32351
-      port: {{ chainruntime.go_evm.runtime_port }}
-
-    # Configs of contract engine server (handle messages with contract engine)
-    contract_engine:
-      # Docker vm contract engine server host, default 127.0.0.1
-      host: 127.0.0.1
-      # Docker vm contract engine server port, default 22351
-      port: {{ chainruntime.go_evm.engine_port }}
-      # Max number of connection created to connect docker vm service
-      max_connection: 5

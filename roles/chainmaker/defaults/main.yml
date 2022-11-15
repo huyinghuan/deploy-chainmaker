@@ -28,7 +28,7 @@ workspace:
 bin: chainmaker
 chainmaker:
   repo: git.chainmaker.org.cn/chainmaker/chainmaker-go.git
-  version: v2.3.0 # 非v2.3.0版本需要在 roles/chainmaker/templates 下复制配置文件夹v2.3.0 到目标版本号
+  version: v2.1.0 # 非v2.3.0版本需要在 roles/chainmaker/templates 下复制配置文件夹v2.3.0 到目标版本号
   name: chainmaker-go
   username: your_username_in_git.chainmaker.org.cn
   password: your_password_in_git.chainmaker.org.cn

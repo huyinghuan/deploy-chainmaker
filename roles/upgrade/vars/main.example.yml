@@ -1,0 +1,9 @@
+bin: chainmaker
+chainmaker:
+  repo: git.chainmaker.org.cn/chainmaker/chainmaker-go.git
+  version: v2.3.0 # 非v2.3.0版本需要在 roles/chainmaker/templates 下复制配置文件夹v2.3.0 到目标版本号
+  name: chainmaker-go
+  username: 646344359@qq.com
+  password: 123456
+  go_compile_version: go1.16.15 # go version
+  old_version: v2.1.0 # 旧版本号

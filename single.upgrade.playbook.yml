@@ -1,0 +1,14 @@
+- name: 单机部署链升级
+  hosts: single_server
+  roles:
+    - { role: upgrade }
+  tasks:
+    - name: 编译链运行时二进制
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: compile_upgrade
+    - name: 升级链
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_upgrade
+      tags: upgrade

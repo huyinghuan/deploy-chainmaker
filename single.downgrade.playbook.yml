@@ -1,0 +1,9 @@
+- name: 单机部署链降级
+  hosts: single_server
+  roles:
+    - { role: upgrade }
+  tasks:
+    - name: 降级
+      ansible.builtin.import_role:
+        name: chainmaker
+        tasks_from: single_downgrade

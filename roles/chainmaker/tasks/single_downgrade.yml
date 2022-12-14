@@ -1,0 +1,38 @@
+# 单机升级准备
+- name: 引入组织id变量
+  ansible.builtin.import_tasks: single_get_orglist.yml
+- name: 检查旧版本
+  ansible.builtin.stat:
+    path: "{{ workspace.run }}/{{ item }}/{{ bin }}{{ chainmaker.old_version }}"
+  register: stat_results
+  with_items: "{{ orgid_list }}"
+  ignore_errors: true
+- name: 停止systemd服务
+  ansible.builtin.systemd:
+    name: "{{ item }}-chain.service"
+    state: stopped
+    daemon_reload: true
+  failed_when: false
+  loop: "{{ orgid_list }}"
+  become: true
+  tags: stop
+- name: 还原旧版本
+  ansible.builtin.copy:
+    src: "{{ workspace.run }}/{{ item.item }}/{{ bin }}{{ chainmaker.old_version }}"
+    dest: "{{ workspace.run }}/{{ item.item }}/{{ bin }}"
+    mode: 0755
+    force: true
+    remote_src: true
+  loop: "{{ stat_results.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stat.exists # 文件不存在时进行备份
+- name: 重启systemd服务
+  ansible.builtin.systemd:
+    name: "{{ orgid_list[idx] }}-chain.service"
+    state: restarted
+    daemon_reload: true
+  loop: "{{ orgid_list }}"
+  loop_control:
+    index_var: idx
+  become: true

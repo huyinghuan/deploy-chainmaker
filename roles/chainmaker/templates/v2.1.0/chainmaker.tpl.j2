@@ -278,20 +278,17 @@ scheduler:
 # provider, sqldb_type cannot be changed after startup.
 # store_path, dsn the content cannot be changed after startup.
 storage:
-  # Default store path
-  store_path: {{ data_save }}/ledgerData1 # [*]
-
   # Prefix for mysql db name
   # db_prefix: org1_
-
+ # ----------------------------- v2.2.0以上版本配置 注释开始  --------------------------------
   # Minimum block height not allowed to be archived
-  unarchive_block_height: 300000
+  {# unarchive_block_height: 300000
 
   # Symmetric encryption algorithm for writing data to disk. can be sm4 or aes
   # encryptor: sm4    # [*]
 
   # Disable block file db, default: false
-  disable_block_file_db: false
+  disable_block_file_db: true
 
   # async write block in file block db to disk, default: false, so default is sync write disk
   logdb_segment_async: false
@@ -324,7 +321,10 @@ storage:
     # max size of entry in bytes.
     max_entry_size: 500
     # max cache size MB
-    hard_max_cache_size: 1024
+    hard_max_cache_size: 1024 #}
+  # -----------------------------  注释结束  --------------------------------
+  # Default store path
+  store_path: {{ data_save }}/ledgerData1 # [*]
   # Block db config
   blockdb_config:
     # Databases type support leveldb, sql, badgerdb, tikvdb
@@ -334,41 +334,6 @@ storage:
       # LevelDb store path
       store_path: {{ data_save }}/block
 
-    # Example for sql provider
-    # Databases type support leveldb, sql, badgerdb, tikvdb
-    # provider: sql # [*]
-    # If provider is sql, sqldb_config should not be null.
-    # sqldb_config:
-      # Sql db type, can be mysql, sqlite. sqlite only for test
-      # sqldb_type: mysql # # [*]
-      # Mysql connection info, the database name is not required. such as:  root:admin@tcp(127.0.0.1:3306)/
-      # dsn: root:password@tcp(127.0.0.1:3306)/
-
-    # Example for badgerdb provider
-    # Databases type support leveldb, sql, badgerdb, tikvdb
-    # provider: badgerdb
-    # If provider is badgerdb, badgerdb_config should not be null.
-    # badgerdb_config:
-      # BadgerDb store path
-      # store_path: ../data/wx-org1.chainmaker.org/history
-      # Whether compression is enabled for stored data, default is 0: disabled
-      # compression: 0
-      # Key and value are stored separately when value is greater than this byte, default is 1024 * 10
-      # value_threshold: 256
-      # Number of key value pairs written in batch. default is 128
-      # write_batch_size: 1024
-
-    # Example for tikv provider
-    # provider: tikvdb
-    # If provider is tikvdb, tikvdb_config should not be null.
-    # tikvdb_config:
-      # db_prefix: "node1_" #default is ""
-      # endpoints: "127.0.0.1:2379" # tikv pd server url，support multi url, example :"192.168.1.2:2379,192.168.1.3:2379"
-      # max_batch_count: 128  # max tikv commit batch size, default: 128
-      # grpc_connection_count: 16 # chainmaker and tikv connect count, default: 4
-      # grpc_keep_alive_time: 10 # keep connnet alive count, default: 10
-      # grpc_keep_alive_timeout: 3  # keep connnect alive time, default: 3
-      # write_batch_size: 128 # commit tikv bacth size each time, default: 128
   # State db config
   statedb_config:
     provider: leveldb

@@ -25,6 +25,7 @@
     src: "compile.{{ chainmaker.new_version }}.sh.j2"
     dest: "{{ workspace.compile }}/{{ chainmaker.name }}{{ chainmaker.new_version }}/compile-upgrade.ansible.sh"
     mode: 0755
+    force: true
   tags: [clone]
   when: not bin_file_stat.stat.exists or force
 - name: 编译

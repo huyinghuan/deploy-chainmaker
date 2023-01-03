@@ -1,0 +1,24 @@
+#!/bin/bash
+export GO111MODULE=on
+export GOPROXY=https://mirrors.aliyun.com/goproxy/
+export GONOPROXY=chainmaker.org
+export GOPRIVATE=chainmaker.org
+export PATH={{ gopath }}/bin:$PATH
+DATETIME=$(date "+%Y%m%d%H%M%S")
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+GIT_COMMIT=$(git log --pretty=format:'%h' -n 1)
+LOCALCONF_HOME=chainmaker.org/chainmaker-go/module/blockchain
+version="$LOCALCONF_HOME.CurrentVersion={{ chainmaker.version }}"
+buildTime="$LOCALCONF_HOME.BuildDateTime=${DATETIME}"
+gitBranch="$LOCALCONF_HOME.GitBranch=${GIT_BRANCH}"
+commit="$LOCALCONF_HOME.GitCommit=${GIT_COMMIT}"
+# 替换go.sum中的版本号
+sed -i 's/OSZ7cZeAqF+EeHa93ZqwGW3ootbroh\/RNgZfv3yuQmU/mGqgWTQ5bj8efDe8\/iNythJJ3rfZh7dSbbQy66LLEME/' go.sum
+sed -i 's/L3YZEEsEkbEEWCA2r4sVk1dkrqz+TZ+uxGihtb6BwwI/+8hHSyVMOWgQ5iWlAMwaWS\/I8TgxTFmVw6ZbxGxi0lY/' go.sum
+cd main
+{{ chainmaker.go_compile_version }} mod tidy
+{{ chainmaker.go_compile_version }} build -ldflags="-X '$buildTime' \
+    -X '$gitBranch' \
+    -X '$version' \
+    -X '$commit'" \
+    -o {{ workspace.compile }}/{{ bin }}{{ chainmaker.new_version }}

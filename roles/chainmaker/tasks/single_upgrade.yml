@@ -34,6 +34,12 @@
     mode: 0777
     remote_src: true
   loop: "{{ orgid_list }}"
+- name: 拷贝动态连接库2
+  ansible.builtin.copy:
+    src: "{{ workspace.compile }}/{{ chainmaker.name }}{{ chainmaker.new_version }}/main/libwasmer_runtime_c_api.so"
+    dest: "/usr/lib64/libwasmer.so"
+    mode: 0777
+    remote_src: true
 - name: 拷贝新版本
   ansible.builtin.copy:
     src: "{{ workspace.compile }}/{{ bin }}{{ chainmaker.new_version }}"
